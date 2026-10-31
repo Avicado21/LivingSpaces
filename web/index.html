@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>livingSpaces</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%233a2e28'/><text x='50' y='66' font-size='48' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800'>lS</text></svg>">
+</head>
+<body>
+<canvas id="scene" tabindex="0" aria-label="3D room"></canvas>
+
+<header class="topbar">
+  <div class="brand"><span class="logo">lS</span><div><b>livingSpaces</b><small id="hhName"></small></div></div>
+  <div class="roomstat" id="roomstat"></div>
+  <div class="tr"><span class="livepill" id="livePill" title="Server and AWS session status">checking…</span><span class="rr-avs" id="avs"></span><button class="me-chip" id="meChip" title="Switch roommate"></button></div>
+</header>
+
+<div class="marker gone" id="marker"><button class="pill" id="addPill"><i></i>Add</button><span class="stem"></span><span class="dot"></span></div>
+<p class="hint" id="hint" style="opacity:0">Add the first thing you all chipped in for, or say hi to Chad on the left.</p>
+
+<div class="acard" id="acard"><div class="in">
+  <div class="ahead"><div class="steps" id="steps"></div><button class="x" id="aClose" aria-label="Close"></button></div>
+  <div class="abody">
+    <section class="astep" data-s="1"><h2>Snap the item</h2><p class="lead">Any phone photo works. It's converted to PNG on your device, then Claude Haiku works out what it is.</p><div id="photoRoot"></div></section>
+    <section class="astep" data-s="2"><div class="ident"><div class="rr-scan" id="scan"><img id="scanImg" alt="Converted PNG"></div><ol class="pipe" id="pipe"></ol><div class="verdict"><div id="verdict"></div><div id="catRoot"></div></div></div></section>
+    <section class="astep" data-s="3"><div class="mini" id="mini"></div><div id="formRoot"></div></section>
+  </div>
+  <div class="afoot"><button class="rr-btn ghost" id="aBack">Back</button><button class="rr-btn" id="aNext">Next</button></div>
+</div><i class="tail"></i></div>
+
+<aside class="drawer left" id="drawerL"><div class="sheet" id="chatRoot"></div><button class="tab" data-side="L"></button></aside>
+<aside class="drawer right" id="drawerR"><div class="sheet" id="billsRoot"></div><button class="tab" data-side="R"></button></aside>
+
+<div class="pop" id="pop"><div class="pop-card" id="popCard"><div class="pop-track"><div class="pg" id="pg1"></div><div class="pg pg2" id="pg2"></div></div></div><i class="arrow"></i></div>
+<div class="tip" id="tip"></div>
+<div id="chips"></div>
+<div class="end" id="end"></div>
+
+<div class="login" id="login"><form id="loginForm" novalidate></form></div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

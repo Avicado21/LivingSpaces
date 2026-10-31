@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>livingSpaces · design review</title>
+<script type="application/json" data-lavish-revisions>
+[{ "id": "r2", "label": "Round 2", "timestamp": "2026-10-30T21:40:00Z", "summary": "Built the chosen direction: A base, Chad, no phases, move-out per item; round 1 decision recorded" },
+ { "id": "r3", "label": "Round 3", "timestamp": "2026-10-30T22:10:00Z", "summary": "Any phone photo to PNG, one model per type with arrows, speakers beside the TV; Bedrock seam documented" },
+ { "id": "r4", "label": "Round 4", "timestamp": "2026-10-30T23:10:00Z", "summary": "Renamed to livingSpaces; live Claude Haiku classification and live Chad on Claude Sonnet via a local Bedrock backend" },
+ { "id": "r5", "label": "Round 5", "timestamp": "2026-10-30T23:45:00Z", "summary": "Five more living-room categories (10 total, 11 things when full) and one zoned layout for sparse and full rooms" }]
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --bg: #f6e7dd; --paper: #fffaf6; --paper-2: #fbf2ea; --paper-3: #f4e4d8; --ink: #3a2e28; --ink-2: #5b4a40; --muted: #8c786c;
+    --line: rgba(58, 46, 40, .12); --accent: #d6784d; --accent-2: #c4673e; --accent-soft: #f7dccb; --good: #3f8a66; --warn: #b5762f; --ai: #5d4fa8;
+    --a: #d6784d; --b: #5f9a82; --c: #8784c9;
+    --shadow: 0 24px 60px -32px rgba(120, 66, 36, .45), 0 2px 8px rgba(120, 66, 36, .06);
+    --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  html { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; }
+  :where(.grid, .flex) > * { min-width: 0; }
+  :where(p, h1, h2, h3, h4, li, td, th) { overflow-wrap: anywhere; }
+  img { max-width: 100%; display: block; }
+  a { color: var(--accent-2); }
+  main { max-width: 1320px; margin: 0 auto; padding: 36px 28px 80px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+  main > * { min-width: 0; }
+  h1, h2, h3, h4, p { margin: 0; }
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  section > header { display: grid; gap: 6px; margin-bottom: 18px; }
+  section > header h2 { font-size: 26px; letter-spacing: -.02em; }
+  section > header p { color: var(--ink-2); font-size: 15px; max-width: 820px; line-height: 1.5; }
+
+  .hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 34px; align-items: center; }
+  .hero h1 { font-size: 44px; letter-spacing: -.035em; line-height: 1.05; margin: 10px 0 14px; }
+  .hero p { font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  .decision { margin-top: 18px; display: flex; gap: 10px; align-items: center; padding: 12px 16px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); font-weight: 650; font-size: 14.5px; }
+  .decision b { color: var(--accent-2); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px rgba(214, 120, 77, .18); flex: none; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .pill { display: inline-flex; gap: 6px; align-items: center; padding: 5px 11px; border-radius: 999px; background: var(--paper-3); font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+  .pill.ai { background: #ece7fb; color: var(--ai); }
+  .pill.good { background: #e0f0e7; color: var(--good); }
+  .pill.warn { background: #f8e9d6; color: var(--warn); }
+  .ref { position: relative; border-radius: 26px; overflow: hidden; box-shadow: var(--shadow); background: #ecd5ca; }
+  .ref img { width: 100%; }
+  .ref span { position: absolute; left: 12px; bottom: 12px; background: rgba(255, 250, 246, .9); padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+
+  .opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .opt { --k: var(--a); position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 14px; background: var(--paper); border-radius: 26px; padding: 14px 14px 18px; border: 1.5px solid var(--line); box-shadow: var(--shadow); }
+  .opt.b { --k: var(--b); } .opt.c { --k: var(--c); }
+  .opt.recd { border-color: var(--k); box-shadow: 0 0 0 4px color-mix(in srgb, var(--k) 18%, transparent), var(--shadow); }
+  .opt .shot { border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--paper-3); cursor: zoom-in; }
+  .opt .shot img { width: 100%; height: 100%; object-fit: cover; }
+  .opt-head { display: grid; gap: 4px; padding: 0 4px; }
+  .opt-head .tag { display: flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--k); }
+  .opt-head .tag i { width: 26px; height: 26px; border-radius: 9px; background: var(--k); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 13px; letter-spacing: 0; }
+  .opt-head h3 { font-size: 21px; letter-spacing: -.015em; }
+  .opt-head p { font-size: 14px; color: var(--ink-2); line-height: 1.45; }
+  .opt ul { margin: 0; padding: 0 4px; list-style: none; display: grid; gap: 8px; align-content: start; font-size: 13.5px; line-height: 1.4; color: var(--ink-2); }
+  .opt li { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 8px; }
+  .opt li b { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding-top: 2px; }
+  .opt .foot { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 0 4px; }
+  .btn { display: inline-flex; gap: 6px; align-items: center; border: 0; border-radius: 999px; padding: 9px 15px; font: inherit; font-size: 13.5px; font-weight: 750; background: var(--ink); color: #fff; cursor: pointer; text-decoration: none; }
+  .btn.ghost { background: transparent; color: var(--ink-2); border: 1px solid rgba(58, 46, 40, .22); }
+  .btn.k { background: var(--k); }
+  .badge { position: absolute; top: -12px; right: 18px; padding: 5px 12px; border-radius: 999px; background: var(--k); color: #fff; font-size: 12px; font-weight: 800; box-shadow: var(--shadow); }
+  .meter { display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .meter span { display: inline-flex; gap: 3px; }
+  .meter span i { width: 14px; height: 6px; border-radius: 3px; background: var(--paper-3); }
+  .meter span i.on { background: var(--k); }
+
+  .live { background: var(--paper); border-radius: 28px; padding: 14px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .live-bar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 4px 6px 12px; }
+  .tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--paper-3); gap: 3px; }
+  .tabs button { border: 0; border-radius: 999px; padding: 8px 16px; background: transparent; font: inherit; font-size: 14px; font-weight: 750; color: var(--muted); cursor: pointer; }
+  .tabs button.on { background: #fff; color: var(--ink); box-shadow: 0 6px 14px -8px rgba(120, 66, 36, .5); }
+  .live-hint { font-size: 13px; color: var(--muted); font-weight: 650; }
+  .frame { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 16 / 10; background: #f2ddd0; }
+  .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  .film { display: grid; gap: 10px; }
+  .film-row { display: grid; grid-template-columns: 150px repeat(3, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+  .film-row.head > div { font-size: 13px; font-weight: 800; padding: 0 2px; display: flex; gap: 8px; align-items: center; }
+  .film-row.head i { width: 22px; height: 22px; border-radius: 7px; color: #fff; display: grid; place-items: center; font-style: normal; font-size: 12px; }
+  .film-row .label { display: grid; align-content: center; gap: 4px; padding: 10px 12px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); }
+  .film-row .label b { font-size: 14.5px; }
+  .film-row .label span { font-size: 12px; color: var(--muted); line-height: 1.35; font-weight: 600; }
+  .film-row figure { margin: 0; border-radius: 16px; overflow: hidden; background: var(--paper); cursor: zoom-in; box-shadow: 0 10px 24px -18px rgba(120, 66, 36, .6); border: 1px solid var(--line); display: grid; align-content: start; }
+  .film-row figure > div { overflow: hidden; aspect-ratio: 16 / 10; }
+  .film-row figure img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+  .film-row figure:hover img { transform: scale(1.03); }
+  .film-row figcaption { font-size: 12px; font-weight: 650; color: var(--ink-2); padding: 8px 10px 10px; line-height: 1.35; }
+
+  .tbl-wrap { overflow-x: auto; border-radius: 22px; border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.45; min-width: 880px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-top: 1px solid var(--line); }
+  thead th { border-top: 0; font-size: 13px; font-weight: 800; background: var(--paper-2); position: sticky; top: 0; }
+  thead th span { display: inline-flex; width: 22px; height: 22px; border-radius: 7px; color: #fff; align-items: center; justify-content: center; margin-right: 6px; font-size: 12px; }
+  tbody th { width: 160px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 800; }
+  td { color: var(--ink-2); }
+  td.best { background: color-mix(in srgb, var(--good) 12%, transparent); }
+  td.cost { background: color-mix(in srgb, var(--warn) 12%, transparent); }
+  tr.group th { background: var(--paper-2); color: var(--ink); font-size: 12px; }
+
+  .arch { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  .card { background: var(--paper); border-radius: 22px; padding: 18px 20px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .card h4 { font-size: 15px; margin-bottom: 8px; }
+  .card ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; background: var(--paper-3); padding: 1px 5px; border-radius: 5px; }
+  .arch svg { width: 100%; height: auto; display: block; color: var(--ink); }
+  .stack { display: grid; gap: 14px; }
+
+  .rec { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  .rec .lead { font-size: 19px; line-height: 1.5; font-weight: 650; }
+  .rec .lead b { color: var(--accent-2); }
+  .borrow { display: grid; gap: 10px; margin-top: 16px; }
+  .borrow div { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+  .borrow i { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-style: normal; font-weight: 800; }
+  .borrow b { color: var(--ink); }
+  .why { display: grid; gap: 10px; }
+  .why .card p { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+
+  form.pick { display: grid; gap: 12px; background: var(--paper); border-radius: 24px; padding: 20px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .choices { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .choices label { display: grid; gap: 4px; padding: 12px 12px; border-radius: 16px; border: 1.5px solid var(--line); background: #fff; cursor: pointer; font-size: 13px; line-height: 1.35; color: var(--ink-2); }
+  .choices label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px rgba(214, 120, 77, .14); }
+  .choices input { accent-color: var(--accent); margin: 0 0 4px; justify-self: start; }
+  .choices b { color: var(--ink); font-size: 14px; }
+  textarea { width: 100%; min-height: 80px; border-radius: 14px; border: 1px solid rgba(58, 46, 40, .2); padding: 10px 12px; font: inherit; font-size: 14px; background: #fff; color: var(--ink); resize: vertical; }
+  .form-foot { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .state { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .state.queued { color: var(--good); }
+
+  .lightbox { position: fixed; inset: 0; background: rgba(40, 26, 18, .72); display: none; place-items: center; z-index: 100; padding: 24px; cursor: zoom-out; }
+  .lightbox.open { display: grid; }
+  .lightbox img { max-width: min(1400px, 100%); max-height: 100%; border-radius: 16px; box-shadow: 0 30px 80px rgba(0, 0, 0, .4); }
+  .lightbox p { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); background: rgba(255, 250, 246, .95); padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  footer { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+
+  .r2 { display: grid; gap: 18px; }
+  .r2-quote { padding: 16px 20px; border-radius: 20px; background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+  .r2-quote b { color: var(--ink); }
+  .r2-quote .who { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 6px; display: block; }
+  .changes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .chg { background: var(--paper); border-radius: 20px; padding: 16px 18px; border: 1px solid var(--line); box-shadow: var(--shadow); display: grid; gap: 8px; align-content: start; }
+  .chg .ask { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .chg h4 { font-size: 16px; letter-spacing: -.01em; }
+  .chg p { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+  .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .strip figure { margin: 0; border-radius: 16px; overflow: hidden; background: var(--paper); cursor: zoom-in; box-shadow: 0 10px 24px -18px rgba(120, 66, 36, .6); border: 1px solid var(--line); display: grid; align-content: start; }
+  .strip figure > div { overflow: hidden; aspect-ratio: 16 / 10; }
+  .strip figure img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+  .strip figure:hover img { transform: scale(1.03); }
+  .strip figcaption { font-size: 12.5px; font-weight: 650; color: var(--ink-2); padding: 9px 11px 11px; line-height: 1.4; }
+  .strip figcaption b { color: var(--ink); }
+  .borrowed { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .borrowed div { padding: 12px 14px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+  .borrowed b { display: block; color: var(--ink); font-size: 13.5px; margin-bottom: 3px; }
+  .borrowed .k { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; color: #fff; font-size: 11px; font-weight: 800; margin-right: 6px; vertical-align: -4px; }
+  .next { padding: 16px 20px; border-radius: 20px; background: #fff4ec; border: 1px dashed rgba(214, 120, 77, .55); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
+  .next b { color: var(--accent-2); }
+  .divider { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .decided { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; background: var(--paper); border-radius: 22px; padding: 18px 20px; border: 1.5px solid var(--good); box-shadow: var(--shadow); }
+  .decided .tick { width: 40px; height: 40px; border-radius: 50%; background: var(--good); color: #fff; display: grid; place-items: center; font-size: 20px; font-weight: 800; }
+  .decided p { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+  .decided b { color: var(--ink); }
+  .brain { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .idea { padding: 12px 13px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); font-size: 12.5px; line-height: 1.45; color: var(--ink-2); display: grid; gap: 4px; align-content: start; }
+  .idea b { color: var(--ink); font-size: 14px; }
+  .idea.pick { border: 1.5px solid var(--good); box-shadow: 0 0 0 3px rgba(63, 138, 102, .1); }
+  .idea .tag { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .idea.pick .tag { color: var(--good); }
+  .plan { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: start; }
+  .plan svg { width: 100%; height: auto; display: block; }
+  .plan ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+  @media (max-width: 1080px) { .brain { grid-template-columns: repeat(2, minmax(0, 1fr)); } .plan { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 1080px) { .changes, .strip { grid-template-columns: minmax(0, 1fr); } .borrowed { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 1080px) { .opts, .hero, .arch, .rec { grid-template-columns: minmax(0, 1fr); } .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); } .film-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } .film-row .label, .film-row.head > div:first-child { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="hero" id="top" data-lavish-revision="r5">
+    <div>
+      <div class="eyebrow">livingSpaces · design · round 5</div>
+      <h1>A real living room:<br>ten kinds of things,<br>one layout.</h1>
+      <p>Round 4 stays as approved: live Claude Haiku and Sonnet, Chad, photos converted to PNG. Round 5 adds five more things college roommates actually buy and split (an <b>area rug</b>, a <b>floor lamp</b>, a <b>bookshelf</b>, a <b>game console</b> and a <b>mini fridge</b>), for 10 categories and about 11 things when the room is full. It also replaces the slot list with one zoned layout that looks right with one item or all of them.</p>
+      <div class="decision"><span class="dot"></span><span>Nothing new to decide. <b>Try round 5 below</b> (Fill room adds 11 things), then annotate or message changes, or press Send &amp; End if it looks right.</span></div>
+      <div class="facts"><span class="pill good">Live Haiku knows all 10 categories</span><span class="pill">Fill room = 11 things</span><span class="pill">Layout tested at 1, 5 and 11 items</span></div>
+    </div>
+    <figure class="ref" style="margin:0"><img src="shots/v5-1.jpg" alt="Round 5: full room with 11 things" data-zoom="shots/v5-1.jpg" style="cursor:zoom-in"><span>Round 5 · full room, 11 things</span></figure>
+  </section>
+
+  <section id="round5" class="r2" data-lavish-revision="r5">
+    <header><div class="eyebrow">Round 5</div><h2>What changed from your message</h2></header>
+    <div class="r2-quote"><span class="who">Your message on the round-4 board</span>"everything good, brainstorm 5 more unique items that could be added to a living room, split or otherwise, then change the layout to be a universially good looking layout at max item added in or minimal items add in, our living room should consistent of 11-ish things that an actual living room could have, as well as what college students would buy split and pay for etc"</div>
+    <header style="margin:4px 0 0"><h2 style="font-size:20px">Brainstorm: what roommates buy for a shared living room</h2><p>Green = added this round. The other five were left out for the reasons given.</p></header>
+    <div class="brain">
+      <div class="idea pick"><span class="tag">Added</span><b>Area rug</b>The first thing that makes a rental feel like a living room. Cheap enough to split three ways.</div>
+      <div class="idea pick"><span class="tag">Added</span><b>Floor lamp</b>Rentals rarely have overhead light in the living room. Often split by two roommates.</div>
+      <div class="idea pick"><span class="tag">Added</span><b>Bookshelf</b>Cube organizers hold games, books and decor for everyone. A classic split purchase.</div>
+      <div class="idea pick"><span class="tag">Added</span><b>Game console</b>The most-fought-over shared purchase, and the most common one to buy out at move-out.</div>
+      <div class="idea pick"><span class="tag">Added</span><b>Mini fridge</b>A living-room drinks fridge. Doubles as an end table beside the couch.</div>
+      <div class="idea"><span class="tag">Folded in</span><b>Bean bag</b>One-person seating, so it is a chair (Haiku's chair definition now includes bean bags).</div>
+      <div class="idea"><span class="tag">Folded in</span><b>Side table</b>Already covered by the coffee table category.</div>
+      <div class="idea"><span class="tag">Left out</span><b>Projector</b>Overlaps with the TV, and the room already has one display.</div>
+      <div class="idea"><span class="tag">Left out</span><b>Big plant</b>Rarely split; the coffee table and bookshelf models already carry plants.</div>
+      <div class="idea"><span class="tag">Left out</span><b>Wall art / poster</b>Usually personal, and it would compete with the window on the only decorated wall.</div>
+    </div>
+    <header style="margin:6px 0 0"><h2 style="font-size:20px">One layout for an empty room and a full one</h2></header>
+    <div class="plan">
+      <div class="card"><svg viewBox="-24 -20 404 400" role="img" aria-labelledby="fpT" style="color:var(--ink)"><title id="fpT">Top-down floor plan of the livingSpaces room with all ten categories</title><rect x="0" y="0" width="360" height="360" fill="#c99a6c" opacity=".35" rx="4"/><path d="M0 360 V0 H360" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" opacity=".75"/><rect x="-3" y="220" width="6" height="94" fill="#fff1df" stroke="currentColor" stroke-width="1.5"><title>window</title></rect><text x="180" y="-6" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" opacity=".55">back wall</text><text x="-10" y="150" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" opacity=".55" transform="rotate(-90 -10 150)">left wall (media)</text><g id="fp-rug"><title>rug</title><rect x="75" y="69" width="204" height="150" rx="6" fill="#efe3d2" stroke="rgba(58,46,40,.35)" transform="rotate(0 177 144)"/><text x="177" y="236" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">rug</text></g><g id="fp-couch"><title>couch</title><rect x="93" y="4" width="168" height="70" rx="6" fill="#f4efe9" stroke="rgba(58,46,40,.35)" transform="rotate(0 177 39)"/><text x="177" y="43" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">couch</text></g><g id="fp-table"><title>coffee table</title><rect x="134" y="118" width="86" height="47" rx="6" fill="#ffffff" stroke="rgba(58,46,40,.35)" transform="rotate(0 177 141)"/><text x="177" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">coffee table</text></g><g id="fp-chair"><title>chair</title><rect x="272" y="177" width="51" height="48" rx="6" fill="#f4efe9" stroke="rgba(58,46,40,.35)" transform="rotate(-34 297 201)"/><text x="297" y="242" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">chair</text></g><g id="fp-tv"><title>TV</title><rect x="3" y="71" width="32" height="128" rx="6" fill="#ffffff" stroke="rgba(58,46,40,.35)" transform="rotate(0 19 135)"/><text x="40" y="139" text-anchor="start" font-size="11" font-weight="700" fill="currentColor">TV</text></g><g id="fp-console"><title>console</title><rect x="11" y="158" width="18" height="30" rx="6" fill="#3a3a40" stroke="rgba(58,46,40,.35)" transform="rotate(0 20 173)"/></g><text x="40" y="177" font-size="11" font-weight="700" fill="currentColor">console (on TV stand)</text><g id="fp-speaker"><title>speaker</title><rect x="7" y="28" width="28" height="28" rx="6" fill="#3a3a40" stroke="rgba(58,46,40,.35)" transform="rotate(0 20 42)"/></g><text x="20" y="67" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">speaker</text><g id="fp-fridge"><title>fridge</title><rect x="47" y="2" width="35" height="37" rx="6" fill="#ffffff" stroke="rgba(58,46,40,.35)" transform="rotate(0 65 20)"/><text x="65" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">fridge</text></g><g id="fp-lamp"><title>floor lamp</title><circle cx="280" cy="23" r="17" fill="#fff6dd" stroke="rgba(58,46,40,.35)"/><text x="280" y="58" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">lamp</text></g><g id="fp-bookshelf"><title>bookshelf</title><rect x="298" y="2" width="60" height="23" rx="6" fill="#ffffff" stroke="rgba(58,46,40,.35)" transform="rotate(0 328 13)"/></g><text x="330" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">bookshelf</text><g id="fp-walk"><title>open floor / walkway, where Add floats</title><rect x="20" y="250" width="150" height="95" rx="10" fill="none" stroke="currentColor" stroke-dasharray="5 5" opacity=".45"/><text x="95" y="302" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" opacity=".7">open floor · Add</text></g></svg></div>
+      <div class="card"><h4>Zones, not a slot list</h4><ul>
+        <li><b>Back wall = seating.</b> Couch centred, the mini fridge as its end table, the floor lamp at the other arm, the bookshelf in the corner.</li>
+        <li><b>Centre = the rug.</b> It sits under the coffee table with the couch's front legs on it, so even two items look like a "living room".</li>
+        <li><b>Left wall = media.</b> TV centred, the speaker in the back corner, and the console on the TV stand. With no TV yet, the console waits on the floor where the stand would go, then hops onto the stand when a TV arrives.</li>
+        <li><b>Front right = reading chair</b>, angled at the coffee table. A second chair stacks behind it (×2) instead of crowding the room.</li>
+        <li><b>Front left stays open</b> as the walkway under the window. That's where the Add marker floats, so nothing ever lands in the way.</li>
+        <li>Every zone works on its own: a lone chair, lamp or rug looks deliberate, not misplaced (see the 1- and 5-item shots below). The rug unrolls in place instead of dropping through furniture.</li>
+      </ul></div>
+    </div>
+    <div class="strip">
+      <figure data-zoom="shots/v5-2.jpg"><div><img src="shots/v5-2.jpg" alt=""></div><figcaption><b>1 thing.</b> A lone reading chair looks deliberate, and Add floats on the open floor.</figcaption></figure>
+      <figure data-zoom="shots/v5-3.jpg"><div><img src="shots/v5-3.jpg" alt=""></div><figcaption><b>5 things.</b> Chair, rug, lamp and TV, with the console on the TV stand. Already reads as a room.</figcaption></figure>
+      <figure data-zoom="shots/v5-1.jpg"><div><img src="shots/v5-1.jpg" alt=""></div><figcaption><b>11 things.</b> All ten categories (two chairs stacked ×2), and the walkway stays clear.</figcaption></figure>
+      <figure data-zoom="shots/v5-4.jpg"><div><img src="shots/v5-4.jpg" alt=""></div><figcaption><b>Live Haiku, 10 categories.</b> The console photo → Game console, with the picker showing all ten types.</figcaption></figure>
+      <figure data-zoom="shots/v5-5.jpg"><div><img src="shots/v5-5.jpg" alt=""></div><figcaption><b>Live Chad on new items.</b> "Jordan and I split the PS5…" → value about $474, so Jordan pays about $237.</figcaption></figure>
+    </div>
+    <div class="card"><h4>Live classification of the new sample photos (Bedrock, us-east-1)</h4>
+      <div class="tbl-wrap" style="box-shadow:none;margin-top:8px"><table style="min-width:600px"><thead><tr><th>Sample</th><th>Claude Haiku</th><th>Its reason</th></tr></thead><tbody>
+        <tr><th>Rug</th><td class="best">Area rug 88%</td><td>"Flat cream rug with brown border lying on wooden floor"</td></tr>
+        <tr><th>Floor lamp</th><td class="best">Floor lamp 91%</td><td>"Tall standing lamp with white rectangular shade on a dark base"</td></tr>
+        <tr><th>Bookshelf</th><td class="best">Bookshelf 91%</td><td>"Open white shelving unit holding rows of colorful books and a small plant"</td></tr>
+        <tr><th>Game console</th><td class="best">Game console 67%</td><td>"Upright white and black console with blue light, plus a black controller". My first painted sample read as a couch (60%) because the stand dominated, so I repainted it.</td></tr>
+        <tr><th>Mini fridge</th><td class="best">Mini fridge 91%</td><td>"Small white refrigerator with handles and two magnets on top"</td></tr>
+      </tbody></table></div></div>
+    <div class="live">
+      <div class="live-bar"><div class="tabs" role="tablist"><button role="tab" class="on" aria-selected="true">Round 5 · livingSpaces</button></div>
+        <span class="live-hint">Live AI via the local backend (running now) · Fill room adds 11 things</span><a class="btn ghost" href="roomie-v5.html" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <div class="frame"><iframe title="Round 5 livingSpaces mockup" src="roomie-v5.html"></iframe></div>
+    </div>
+  </section>
+
+  <div class="divider">Round 4 · approved ("everything good"), kept below</div>
+
+
+  <section id="round4" class="r2" data-lavish-revision="r4">
+    <header><div class="eyebrow">Round 4</div><h2>What changed from your message</h2></header>
+    <div class="r2-quote"><span class="who">Your message on the round-3 board</span>"Let's just refine the haiku called to make sure it's classifying correctly so in the call, just make sure you're telling haiku the list of possible furniture available in the room and I just just lock that down a little more by chair we meant like armchair right so if someone does a picture of an armchair, that should add a chair not a couch. Also made the Chad bought connect to AWS Bedrock for real."<br><br><span class="who" style="margin-top:4px">And the app name</span><b>livingSpaces</b>: renamed in the round-4 app (title, sign-in, top bar, Chad's greeting) and on this board. Rounds 1–3 below are kept as they were reviewed.</div>
+    <div class="changes" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="chg"><span class="ask">"Telling Haiku the list … an armchair should add a chair"</span><h4>Live Claude Haiku with locked-down categories</h4><p>The photo, already converted to PNG, goes to <code>us.anthropic.claude-haiku-5-5</code>. The prompt lists the only five categories with definitions. <b>chair</b> is one-person seating (armchairs, accent chairs, recliners, desk and dining chairs), and the prompt says "an armchair is a chair, never a couch", with "one seat cushion is a chair" as the tiebreak. A JSON schema limits the answer to couch | tv | coffee_table | chair | speaker, and Haiku also returns a score for each type, a suggested name and a one-line reason, which the card shows.</p></div>
+      <div class="chg"><span class="ask">"Chad … connect to AWS Bedrock for real"</span><h4>Live Chad on Claude Sonnet</h4><p>Chad streams from <code>us.anthropic.claude-sonnet-5-5</code>. Each question carries the conversation plus a fresh household ledger: items with who paid what (including stacked duplicates), items already moved out, bills, buyouts, and who owes whom. Chad is told to use only those facts, keep answers short, and suggest one fair next step in disputes.</p></div>
+      <div class="chg"><span class="ask">Credentials</span><h4>A small local backend</h4><p><code>server/index.mjs</code> runs on 127.0.0.1:8787 with AWS profile <code>cic-sandbox</code> in <code>us-east-1</code>. The browser only sends PNGs and chat turns; it never sees a credential. Requests are accepted only from this board and local pages (any other origin gets a 403). This account's newer bedrock-mantle endpoint returned 404 for every model id, so the backend uses Bedrock InvokeModel with the US inference profiles.</p></div>
+      <div class="chg"><span class="ask">Errors</span><h4>Clear message when the AWS session expires</h4><p>An expired or missing session comes back as one message: "The AWS session for profile "cic-sandbox" is expired or not authorized. Refresh it (for example: aws sso login --profile cic-sandbox) and try again." The top-right pill turns red. The add card offers <b>Retry</b> or an explicit <b>Use a simulated result</b>, and Chad offers <b>Answer offline instead</b>. If the backend isn't running, the pill says "Backend offline".</p></div>
+    </div>
+    <div class="card"><h4>Verified with live calls (Bedrock, us-east-1)</h4>
+      <div class="tbl-wrap" style="box-shadow:none;margin-top:8px"><table style="min-width:640px">
+        <thead><tr><th>Input</th><th>Live Claude result</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><th>Armchair sample</th><td class="best"><b>Chair 82%</b>: "Single seat cushion with padded arms, chunky upholstered armchair"</td><td>Round-1 mock deliberately said couch; Haiku now gets this right</td></tr>
+          <tr><th>Sofa sample</th><td><b>Couch 95%</b>: "Two seat cushions and two arms … seating for two"</td><td>2.1 s</td></tr>
+          <tr><th>TV sample</th><td><b>TV 90%</b>: "Large flat-screen TV on a low light-colored media console"</td><td>1.7 s</td></tr>
+          <tr><th>Speaker sample</th><td><b>Speaker 78%</b>: "Tall dark tower speaker beside a soundbar-style unit"</td><td>2.7 s</td></tr>
+          <tr><th>Coffee table sample</th><td><b>Coffee table 80%</b>: "Low wooden bench holding books and a vase, used as a table"</td><td>Was 50% until the definition added "low benches used as a table"</td></tr>
+          <tr><th>Chad: "Who paid for the couches, and who owes who right now?"</th><td>Listed both couches with each person's share (Jordan didn't chip in for the loveseat), then "Maya owes Alex $973.33 · Jordan owes Alex $935.46"</td><td>Numbers come straight from the ledger</td></tr>
+          <tr><th>Chad: "Maya says the TV is mostly hers. Is that fair?"</th><td>"Not according to the ledger … each paid $183.33 … One concrete next step: ask Maya if she'd like to buy out your and Jordan's shares at move-out"</td><td>Dispute handling with a fair next step</td></tr>
+          <tr><th>Expired / missing AWS session</th><td>"The AWS session for profile … is expired or not authorized. Refresh it … and try again."</td><td>Tested with a backend pointed at a profile that doesn't exist</td></tr>
+        </tbody></table></div></div>
+    <div class="live">
+      <div class="live-bar"><div class="tabs" role="tablist"><button role="tab" class="on" aria-selected="true">Round 4 · livingSpaces (live AI)</button></div>
+        <span class="live-hint">Needs the local backend on this machine (running now); the top-right pill shows its status</span><a class="btn ghost" href="roomie-v4.html" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <div class="frame"><iframe title="Round 4 livingSpaces mockup" src="roomie-v4.html"></iframe></div>
+    </div>
+    <div class="next"><b>Ready for testing.</b> Upload any photo (HEIC works) or a sample and watch Haiku classify it, then ask Chad about the furniture or a dispute. The demo is live only while the local backend runs on this machine; without it, the app says so clearly.</div>
+  </section>
+
+  <div class="divider">Round 3 · superseded by round 4</div>
+
+  <section id="round3" class="r2" data-lavish-revision="r3">
+    <header><div class="eyebrow">Round 3</div><h2>What changed from your message</h2></header>
+    <div class="r2-quote"><span class="who">Your message on the round-2 board</span>"So let's change it up and let's make it so when I upload a picture that will work and I will actually go to Claude haiku on AWS bedrock and let's try to support as many types of pictures as we can so you wanna support like HEIC and other iPhone types and whatever types are on android and then we convert them all into a standard photo type so li let's just convert it to PNG right and then send a PNG to the Agent for classification and then let's have it so if I add multiple of the same furniture type, we're not gonna add another representation of it to the room instead what's gonna happen is if I click on the representation of the first one then that little menu I will have a arrow somewhere, and if I click the arrow, then it will, the menu will go to the details of the other one, add  tv speakers/sound systems as another category and make sure its placed next to the TV"</div>
+    <div class="changes" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="chg"><span class="ask">"Support HEIC … Android … convert to PNG"</span><h4>Any phone photo becomes a PNG</h4><p>The real format is read from the file's first bytes, because iPhones often upload HEIC with no file type. JPEG, PNG, WebP, AVIF, GIF and BMP use the browser's decoder. HEIC/HEIF uses it where it can (Safari) and otherwise loads libheif. The photo is then resized (long edge ≤ 1568 px), re-encoded as <b>PNG</b> and kept under 3.75 MB. The card shows each step: received, decoded, converted, classified. Tested with a real HEIC with an empty file type, a JPEG, and a TIFF (refused in Chrome with a clear message). RAW/DNG is refused with a "save it as JPEG or HEIC" prompt.</p></div>
+      <div class="chg"><span class="ask">"Multiple of the same type … an arrow"</span><h4>One model per type, arrows in its menu</h4><p>Adding a second couch doesn't add a second couch to the room. The existing one bounces, and a small <b>×2</b> chip appears above it. Click it and the menu shows "Couch · 1 of 2" with ‹ › arrows (the arrow keys work too) to flip between each couch's photo, price and who paid. Moving one out keeps the model until the last one leaves. Chad also understands groups: "Tell me about our chairs" lists both.</p></div>
+      <div class="chg"><span class="ask">"Add TV speakers / sound systems … next to the TV"</span><h4>Speakers, placed beside the TV</h4><p>A fifth category with its own generic tower-speaker model and a fixed spot right next to the TV console. It appears in the type picker, in Chad's answers, and in move-out. The new sample photo (a Samsung-style HEIF) classifies as Speaker.</p></div>
+      <div class="chg"><span class="ask">"Actually go to Claude Haiku on AWS Bedrock"</span><h4>Still simulated here; the seam is marked</h4><p>Per firstmate, the mockup keeps classification simulated and real AWS integration comes with the implementation. The seam is <code>classify3()</code>: the PNG would be base64-encoded and POSTed to <code>/api/classify</code>, and a Lambda would call <code>anthropic.claude-haiku-5-5</code> on Bedrock with an image block (<code>image/png</code>) and a JSON-schema output whose category enum now includes <code>speaker</code>. The card's last step shows exactly that request (marked "mocked").</p></div>
+    </div>
+    <div class="live">
+      <div class="live-bar"><div class="tabs" role="tablist"><button role="tab" class="on" aria-selected="true">Round 3</button></div>
+        <span class="live-hint">Upload any photo (HEIC works), or press Fill room for duplicates + speakers</span><a class="btn ghost" href="roomie-v3.html" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <div class="frame"><iframe title="Round 3 mockup" src="roomie-v3.html"></iframe></div>
+    </div>
+    <div class="strip">
+      <figure data-zoom="shots/v3-1.jpg"><div><img src="shots/v3-1.jpg" alt=""></div><figcaption><b>Formats up front.</b> HEIC, HEIF, JPEG, PNG, WebP, AVIF, GIF, BMP, TIFF*; samples labelled with their phone format.</figcaption></figure>
+      <figure data-zoom="shots/v3-2.jpg"><div><img src="shots/v3-2.jpg" alt=""></div><figcaption><b>A real HEIC upload</b> (no MIME type) decoded with libheif and converted to a 1440×900 PNG before the mocked Haiku call.</figcaption></figure>
+      <figure data-zoom="shots/v3-3.jpg"><div><img src="shots/v3-3.jpg" alt=""></div><figcaption><b>Speaker category.</b> A HEIF photo of a soundbar + tower classifies as Speaker.</figcaption></figure>
+      <figure data-zoom="shots/v3-4.jpg"><div><img src="shots/v3-4.jpg" alt=""></div><figcaption><b>Speaker beside the TV</b>; the couch and chair each carry two items, so they show <b>×2</b> instead of extra models.</figcaption></figure>
+      <figure data-zoom="shots/v3-5.jpg"><div><img src="shots/v3-5.jpg" alt=""></div><figcaption><b>Arrows in the menu.</b> "Couch · 2 of 2": the second couch's own photo, price and split.</figcaption></figure>
+      <figure data-zoom="shots/v3-6.jpg"><div><img src="shots/v3-6.jpg" alt=""></div><figcaption><b>Chad knows about stacks.</b> "Tell me about our chairs" lists both chairs and who paid for each.</figcaption></figure>
+    </div>
+    <div class="next">Next step if this looks right: implementation, where the PNG pipeline stays as-is and <code>classify3()</code> gets wired to a Lambda that calls Claude Haiku on Bedrock. Otherwise, annotate or message what to change.</div>
+  </section>
+
+  <div class="divider">Round 2 · superseded by round 3</div>
+
+  <section id="round2" class="r2" data-lavish-revision="r2">
+    <header><div class="eyebrow">Round 2</div><h2>What changed from your notes</h2></header>
+    <div class="r2-quote"><span class="who">Your answer on the round-1 board</span><b>A + borrowed ideas.</b> "In the Room Mate chat Agent thing it should be called Chad and you should just be able to use him to help you like settle any little disputes or ask questions like about your furniture and the details about the furniture like who bought what everything like that a step a version a borrowed idea ideas. make no strict phases, at start i can add furnicture, view utility, and talk to chad. Move out not seperate phase either that's just whenever i hit the button a piece of furnicture"</div>
+    <div class="changes">
+      <div class="chg"><span class="ask">"It should be called Chad"</span><h4>Chad, the roommate helper</h4><p>The left tab is Chad. He settles small disputes like before, and now also answers furniture questions from the ledger: who paid for the couch, what your share of everything is, when the TV was bought, what an item is worth now. Every item's card has an <b>Ask Chad</b> button that opens him with that item in context.</p></div>
+      <div class="chg"><span class="ask">"Make no strict phases"</span><h4>Everything is available from sign-in</h4><p>No phase pill and no "we're moved in" gate. Both tabs (Chad and Bills) sit on the edges from the first second, and the Add marker is always on the floor. The top bar just shows what's in the room and how much is shared.</p></div>
+      <div class="chg"><span class="ask">"Move out … whenever I hit the button"</span><h4>Move-out is a button on any item</h4><p>Click a piece of furniture, then <b>Move out</b>: pick who keeps it, agree a value, see who owes whom, confirm. It works at any time, for one item or all of them. When the last item leaves, you see the empty-room tally and can keep using the room.</p></div>
+    </div>
+    <div class="live">
+      <div class="live-bar"><div class="tabs" role="tablist"><button role="tab" class="on" aria-selected="true">Round 2 · A + borrowed ideas</button></div>
+        <span class="live-hint">Sign in, tap + Add on the floor, or open Chad on the left</span><a class="btn ghost" href="roomie-v2.html" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <div class="frame"><iframe title="Round 2 mockup" src="roomie-v2.html"></iframe></div>
+    </div>
+    <div class="strip">
+      <figure data-zoom="shots/v2-1.jpg"><div><img src="shots/v2-1.jpg" alt=""></div><figcaption><b>Sign-in lands here.</b> Empty room, Add on the floor, Chad and Bills already on the edges.</figcaption></figure>
+      <figure data-zoom="shots/v2-2.jpg"><div><img src="shots/v2-2.jpg" alt=""></div><figcaption><b>Add card pinned in the room</b> (from C), using A's steps. The armchair sample is misclassified on purpose so you can fix it.</figcaption></figure>
+      <figure data-zoom="shots/v2-3.jpg"><div><img src="shots/v2-3.jpg" alt=""></div><figcaption><b>Chad answers furniture questions</b> ("Who paid for the couch?", "What's my share?") while Bills stays open.</figcaption></figure>
+      <figure data-zoom="shots/v2-4.jpg"><div><img src="shots/v2-4.jpg" alt=""></div><figcaption><b>Move out from the item.</b> Keeper, value now (from B: suggested, paid, half or slider), paybacks. The light warms while you settle it.</figcaption></figure>
+      <figure data-zoom="shots/v2-5.jpg"><div><img src="shots/v2-5.jpg" alt=""></div><figcaption><b>Ask Chad about this item.</b> Opens Chad with the sofa's price, date and who paid what.</figcaption></figure>
+      <figure data-zoom="shots/v2-6.jpg"><div><img src="shots/v2-6.jpg" alt=""></div><figcaption><b>Room empty.</b> Final buyout tally and who kept what, with "Keep using the room".</figcaption></figure>
+    </div>
+    <header style="margin:6px 0 0"><h2 style="font-size:20px">How the borrowed ideas landed</h2></header>
+    <div class="borrowed">
+      <div><b><span class="k" style="background:var(--a)">A</span>Base</b>Fixed isometric diorama, edge drawers, the room glides aside via the camera's view offset. Unchanged.</div>
+      <div><b><span class="k" style="background:var(--c)">C</span>In-world add card</b>Adopted. A marker floats over open floor; its card opens beside it instead of a modal.</div>
+      <div><b><span class="k" style="background:var(--b)">B</span>Buyout value</b>Adopted in the item popover: suggested (~20%/yr wear), purchase price, half, or a slider.</div>
+      <div><b><span class="k" style="background:var(--c)">C</span>Phase lighting</b>Adapted. With no phases, the golden-hour light now plays only while you settle an item, then returns to day.</div>
+    </div>
+    <div class="next">If this looks right, the next step is a real build of this version: a Vite + three.js client, plus Lambda endpoints that make the Bedrock Haiku (classify) and Sonnet (Chad) calls. If anything should change, annotate it here or send a message, and I'll do another round.</div>
+  </section>
+
+  <div class="divider">Round 1 · exploration (decided)</div>
+
+  <section id="options">
+    <header><div class="eyebrow">At a glance</div><h2>The three directions</h2><p>Screenshots show the living phase. Click any image to enlarge it, or open the mockup full screen.</p></header>
+    <div class="opts">
+      <article class="opt a recd" id="opt-a">
+        <span class="badge">Recommended base</span>
+        <div class="shot" data-zoom="shots/a-3.jpg" data-cap="Option A · living phase, both drawers open"><img src="shots/a-3.jpg" alt="Option A living phase"></div>
+        <div class="opt-head"><div class="tag"><i>A</i>Diorama + drawers</div><h3>The reference image, made interactive</h3><p>A fixed isometric diorama that never rotates. Drawers slide over it, and the room glides aside to make space.</p></div>
+        <ul>
+          <li><b>Camera</b><span>Orthographic, locked to the reference angle</span></li>
+          <li><b>Tabs</b><span>Pull-tabs on the edges; the room shifts by camera view offset (no canvas resize)</span></li>
+          <li><b>Add</b><span>Centred "Add" button opens a 3-step modal: Photo, What is it, Details</span></li>
+          <li><b>Move-out</b><span>Click an item: a popover pinned to it shows owners, keeper and payback, then confirm</span></li>
+        </ul>
+        <div class="foot"><span class="meter">Build effort <span><i class="on"></i><i></i><i></i></span></span><span style="flex:1"></span><button class="btn ghost" data-try="a">Try below</button><a class="btn k" href="option-a-diorama.html" target="_blank" rel="noopener">Open ↗</a></div>
+      </article>
+      <article class="opt b" id="opt-b">
+        <div class="shot" data-zoom="shots/b-3.jpg" data-cap="Option B · living phase, both columns open"><img src="shots/b-3.jpg" alt="Option B living phase"></div>
+        <div class="opt-head"><div class="tag"><i>B</i>Studio split-view</div><h3>An app layout with a 3D stage</h3><p>The room sits on a stage you can orbit. Chat and bills are real columns that push the stage narrower.</p></div>
+        <ul>
+          <li><b>Camera</b><span>Perspective with a clamped orbit and zoom</span></li>
+          <li><b>Tabs</b><span>Full-height spines; columns animate open and the canvas resizes with them</span></li>
+          <li><b>Add</b><span>Bottom sheet with a camera viewfinder, then drag a glowing ghost model to where the item really sits</span></li>
+          <li><b>Move-out</b><span>Camera focuses the item; sheet with keeper cards and a value slider (20%/yr wear suggestion), then "Pack it up"</span></li>
+        </ul>
+        <div class="foot"><span class="meter">Build effort <span><i class="on"></i><i class="on"></i><i></i></span></span><span style="flex:1"></span><button class="btn ghost" data-try="b">Try below</button><a class="btn k" href="option-b-studio.html" target="_blank" rel="noopener">Open ↗</a></div>
+      </article>
+      <article class="opt c" id="opt-c">
+        <div class="shot" data-zoom="shots/c-3.jpg" data-cap="Option C · living phase, both glass panels open"><img src="shots/c-3.jpg" alt="Option C living phase"></div>
+        <div class="opt-head"><div class="tag"><i>C</i>Cinematic in-world</div><h3>Phases as scenes, UI inside the room</h3><p>The camera moves between shots and the light changes from morning to golden hour. Cards float next to the things they describe.</p></div>
+        <ul>
+          <li><b>Camera</b><span>Scripted shots per phase; panels truck the camera sideways with parallax</span></li>
+          <li><b>Tabs</b><span>Round floating buttons that expand into glass panels</span></li>
+          <li><b>Add</b><span>A marker floats over open floor; its card is a fill-in-the-blanks sentence</span></li>
+          <li><b>Move-out</b><span>Item lifts and spins; drag its polaroid onto a roommate bubble; optional "Ask Roomie for a fair price"</span></li>
+        </ul>
+        <div class="foot"><span class="meter">Build effort <span><i class="on"></i><i class="on"></i><i class="on"></i></span></span><span style="flex:1"></span><button class="btn ghost" data-try="c">Try below</button><a class="btn k" href="option-c-cinematic.html" target="_blank" rel="noopener">Open ↗</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="live">
+    <header><div class="eyebrow">Hands on</div><h2>Try them live</h2><p>One mockup runs at a time to keep things smooth. Sign in (any values), then add a sample photo. The armchair sample is deliberately misclassified as a couch so you can correct it. Use <b>Reviewer → Fill room</b> to skip ahead to living and move-out.</p></header>
+    <div class="live">
+      <div class="live-bar"><div class="tabs" role="tablist"><button role="tab" data-tab="a" class="on">A · Diorama</button><button role="tab" data-tab="b">B · Studio</button><button role="tab" data-tab="c">C · Cinematic</button></div>
+        <span class="live-hint" id="liveHint">Option A · press "How it's built" inside for its architecture note</span><a class="btn ghost" id="liveOpen" href="option-a-diorama.html" target="_blank" rel="noopener">Open full screen ↗</a></div>
+      <div class="frame"><iframe id="liveFrame" title="Live mockup" src="option-a-diorama.html"></iframe></div>
+    </div>
+  </section>
+
+  <section id="film">
+    <header><div class="eyebrow">Side by side</div><h2>The same moment, three ways</h2><p>Each row is the same step of the flow captured in each mockup at 1440×900.</p></header>
+    <div class="film">
+      <div class="film-row head"><div></div><div><i style="background:var(--a)">A</i>Diorama + drawers</div><div><i style="background:var(--b)">B</i>Studio split-view</div><div><i style="background:var(--c)">C</i>Cinematic in-world</div></div>
+      <div class="film-row"><div class="label"><b>1 · Empty room</b><span>Right after sign-in. Only the room and an Add control.</span></div>
+        <figure data-zoom="shots/a-1.jpg"><div><img src="shots/a-1.jpg" alt=""></div><figcaption>Fixed iso view, pulsing "Add" pill in the middle of the floor</figcaption></figure>
+        <figure data-zoom="shots/b-1.jpg"><div><img src="shots/b-1.jpg" alt=""></div><figcaption>Room on a rounded stage; camera button pinned to the floor</figcaption></figure>
+        <figure data-zoom="shots/c-1.jpg"><div><img src="shots/c-1.jpg" alt=""></div><figcaption>Low "move-in day" shot in cool morning light; floating marker</figcaption></figure></div>
+      <div class="film-row"><div class="label"><b>2 · Classify + correct</b><span>Armchair sample: the mocked Haiku says couch (58%). The user fixes it.</span></div>
+        <figure data-zoom="shots/a-2.jpg"><div><img src="shots/a-2.jpg" alt=""></div><figcaption>Modal step 2: four category tiles with confidence</figcaption></figure>
+        <figure data-zoom="shots/b-2.jpg"><div><img src="shots/b-2.jpg" alt=""></div><figcaption>Sheet: segmented control; ghost model in the room swaps live</figcaption></figure>
+        <figure data-zoom="shots/c-2.jpg"><div><img src="shots/c-2.jpg" alt=""></div><figcaption>Sentence card: "This is our [couch ▾] 58% · check me"</figcaption></figure></div>
+      <div class="film-row"><div class="label"><b>3 · Living, both tabs open</b><span>Chat on the left, bills on the right, room centred between them.</span></div>
+        <figure data-zoom="shots/a-3.jpg"><div><img src="shots/a-3.jpg" alt=""></div><figcaption>Floating drawers; room zooms down to fit</figcaption></figure>
+        <figure data-zoom="shots/b-3.jpg"><div><img src="shots/b-3.jpg" alt=""></div><figcaption>Columns squeeze the stage; room re-centres</figcaption></figure>
+        <figure data-zoom="shots/c-3.jpg"><div><img src="shots/c-3.jpg" alt=""></div><figcaption>Glass panels; camera dollies back</figcaption></figure></div>
+      <div class="film-row"><div class="label"><b>4 · Move-out</b><span>Click the sofa, choose who keeps it, see who owes whom.</span></div>
+        <figure data-zoom="shots/a-4.jpg"><div><img src="shots/a-4.jpg" alt=""></div><figcaption>Popover flips to keeper picker and paybacks</figcaption></figure>
+        <figure data-zoom="shots/b-4.jpg"><div><img src="shots/b-4.jpg" alt=""></div><figcaption>Keeper cards, value slider, payment flows</figcaption></figure>
+        <figure data-zoom="shots/c-4.jpg"><div><img src="shots/c-4.jpg" alt=""></div><figcaption>Photo dropped on Maya; Roomie suggests $854</figcaption></figure></div>
+      <div class="film-row"><div class="label"><b>5 · Room empty</b><span>The end of the flow once the last item is settled.</span></div>
+        <figure data-zoom="shots/a-5.jpg"><div><img src="shots/a-5.jpg" alt=""></div><figcaption>Centred card: final tally and who kept what</figcaption></figure>
+        <figure data-zoom="shots/b-5.jpg"><div><img src="shots/b-5.jpg" alt=""></div><figcaption>Settlement sheet with a per-person table</figcaption></figure>
+        <figure data-zoom="shots/c-5.jpg"><div><img src="shots/c-5.jpg" alt=""></div><figcaption>Dusk pull-back and "Everyone's square"</figcaption></figure></div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <header><div class="eyebrow">Trade-offs</div><h2>Comparison</h2><p>Green cells are where an option is strongest; amber cells are its main cost.</p></header>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th></th><th><span style="background:var(--a)">A</span>Diorama + drawers</th><th><span style="background:var(--b)">B</span>Studio split-view</th><th><span style="background:var(--c)">C</span>Cinematic in-world</th></tr></thead>
+      <tbody>
+        <tr class="group"><th colspan="4">Look and layout</th></tr>
+        <tr><th>Camera &amp; room</th><td class="best">Orthographic iso, same framing as the reference image</td><td>Perspective, orbit within the two-wall quadrant, zoom</td><td>Perspective shots per phase (low frontal, iso, golden hour, pull-back)</td></tr>
+        <tr><th>Room shift</th><td class="best"><code>setViewOffset</code> + zoom on a full-screen canvas. Cheapest and smoothest</td><td class="cost">Real grid columns; canvas resized on every frame of the transition</td><td>Camera trucks sideways in world space, with parallax; dollies back when both panels are open</td></tr>
+        <tr><th>Tabs</th><td>Pull-tabs on the screen edges</td><td>Full-height spines with chevrons</td><td>Round floating buttons that expand into glass panels</td></tr>
+        <tr><th>Phase signal</th><td>Segmented pill: Move-in · Living · Move-out</td><td>Progress rail with live counts</td><td class="best">Day chip plus lighting: morning → day → golden hour → dusk</td></tr>
+        <tr class="group"><th colspan="4">Move-in</th></tr>
+        <tr><th>Add flow</th><td class="cost">3-step modal wizard (clear, but it covers the room)</td><td>Bottom sheet with viewfinder, then placement + details</td><td class="best">Card anchored in the room; fill-in-the-blanks sentence</td></tr>
+        <tr><th>Fix classification</th><td>4 tiles with Haiku confidence; low confidence flagged</td><td>Segmented control with confidence meters; ghost swaps live</td><td>Inline dropdown token; "check me" under 70%</td></tr>
+        <tr><th>Placement</th><td>Automatic slots per category</td><td class="best">Drag the ghost anywhere and rotate it (stored per item)</td><td>Automatic slots per category</td></tr>
+        <tr class="group"><th colspan="4">Move-out</th></tr>
+        <tr><th>Interaction</th><td>Popover pinned to the item → keeper → paybacks → confirm</td><td>Camera focus + sheet → keeper cards → value → "Pack it up"</td><td class="best">Item lifts and spins; drag its polaroid onto a roommate (tap also works)</td></tr>
+        <tr><th>Buyout value</th><td class="cost">Purchase price only</td><td class="best">Purchase price, 20%/yr suggestion, or custom slider</td><td>Purchase price, or a Sonnet-suggested depreciated value</td></tr>
+        <tr><th>Removal</th><td>Lifts, shrinks, puff of dust</td><td>Packed into a cardboard box that slides out</td><td>Arcs into the keeper's bubble, which counts it</td></tr>
+        <tr><th>End state</th><td>Centred tally card</td><td>Settlement sheet with a table and an export button (mock)</td><td>Dusk pull-back with an "Everyone's square" card</td></tr>
+        <tr class="group"><th colspan="4">Cost and risk</th></tr>
+        <tr><th>Relative build effort</th><td class="best">1× baseline</td><td>≈1.5× (placement persistence, resize handling, orbit limits)</td><td class="cost">≈2× (shot tuning per screen size, drag + tap paths, light rigs)</td></tr>
+        <tr><th>Main risk</th><td>Feels conventional; the modal breaks the single-screen feel a little</td><td class="cost">Drifts from the reference look; sheets hide the room; heavier on low-end devices</td><td class="cost">Lots of motion for repeat use (adding 12 items); hard to keep consistent across viewports</td></tr>
+        <tr><th>Mobile fit</th><td>Good: drawers can become full-width sheets</td><td>OK: columns have to become overlays</td><td>Good for touch, but camera moves cost time</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="arch">
+    <header><div class="eyebrow">Where AWS plugs in</div><h2>Architecture (same for all three)</h2><p>The mockups never call AWS. Two functions in the shared code mark the seams: <code>mockClassify()</code> for Claude Haiku and <code>mockChatReply()</code> for Claude Sonnet. Each mockup also has a "How it's built" note.</p></header>
+    <div class="arch">
+      <div class="card">
+        <svg viewBox="0 0 760 300" role="img" aria-labelledby="archT">
+          <title id="archT">Browser to API Gateway and Lambda, then to Bedrock Haiku, Bedrock Sonnet, S3 and DynamoDB</title>
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="currentColor" opacity=".55"/></marker></defs>
+          <g font-family="inherit" font-size="13" font-weight="700" fill="currentColor">
+            <g id="n-client"><title>Browser client</title><rect x="10" y="100" width="180" height="100" rx="18" fill="#fff" stroke="rgba(58,46,40,.25)"/><text x="100" y="135" text-anchor="middle">Browser</text><text x="100" y="156" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">three.js room · panels</text><text x="100" y="174" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">Cognito sign-in</text></g>
+            <g id="n-api"><title>API Gateway and Lambda</title><rect x="262" y="100" width="190" height="100" rx="18" fill="#fff7f0" stroke="rgba(214,120,77,.7)"/><text x="357" y="135" text-anchor="middle">API Gateway + Lambda</text><text x="357" y="156" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">/classify · /chat (SSE)</text><text x="357" y="174" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">/items · /bills · /moveout</text></g>
+            <g id="n-haiku"><title>Claude Haiku on Bedrock</title><rect x="520" y="12" width="230" height="78" rx="18" fill="#efe9fb" stroke="rgba(93,79,168,.5)"/><text x="635" y="42" text-anchor="middle">Bedrock · Claude Haiku</text><text x="635" y="62" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".75">photo → {category, confidence}</text><text x="635" y="78" text-anchor="middle" font-weight="500" font-size="10.5" opacity=".6">anthropic.claude-haiku-5-5</text></g>
+            <g id="n-sonnet"><title>Claude Sonnet on Bedrock</title><rect x="520" y="111" width="230" height="78" rx="18" fill="#efe9fb" stroke="rgba(93,79,168,.5)"/><text x="635" y="141" text-anchor="middle">Bedrock · Claude Sonnet</text><text x="635" y="161" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".75">streamed mediator chat</text><text x="635" y="177" text-anchor="middle" font-weight="500" font-size="10.5" opacity=".6">anthropic.claude-sonnet-5-5</text></g>
+            <g id="n-data"><title>Data stores</title><rect x="520" y="210" width="230" height="78" rx="18" fill="#fff" stroke="rgba(58,46,40,.25)"/><text x="635" y="240" text-anchor="middle">S3 · DynamoDB</text><text x="635" y="260" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">photos · items, splits, bills,</text><text x="635" y="276" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">buyouts</text></g>
+          </g>
+          <g stroke="currentColor" stroke-opacity=".45" stroke-width="2" fill="none" marker-end="url(#ah)">
+            <path id="e-api" d="M190 150 H258"><title>HTTPS with a Cognito token</title></path>
+            <path id="e-haiku" d="M452 128 C490 118 492 56 516 52"><title>Classify a photo</title></path>
+            <path id="e-sonnet" d="M452 150 H516"><title>Stream chat</title></path>
+            <path id="e-data" d="M452 172 C490 182 492 244 516 248"><title>Persist ledger</title></path>
+          </g>
+          <text x="224" y="140" font-size="11" text-anchor="middle" fill="currentColor" opacity=".6">HTTPS</text>
+          <path d="M100 200 C100 260 300 272 516 262" stroke="currentColor" stroke-opacity=".3" stroke-width="1.5" stroke-dasharray="5 5" fill="none" marker-end="url(#ah)"><title>Presigned photo upload straight to S3</title></path>
+          <text x="300" y="262" font-size="11" fill="currentColor" opacity=".55">presigned photo upload</text>
+        </svg>
+      </div>
+      <div class="stack">
+        <div class="card"><h4>Seam 1 · classification (Claude Haiku)</h4><ul>
+          <li>Photo goes to S3 through a presigned URL; <code>/classify</code> sends it as an image block to <code>anthropic.claude-haiku-5-5</code> through the Bedrock Mantle Messages client.</li>
+          <li>Structured outputs (JSON schema) pin <code>category</code> to an enum of the four supported types, plus <code>confidence</code> and a suggested name. Adding a category means one enum value and one generic model.</li>
+          <li>The UI always lets a roommate override the result; low confidence (&lt;70%) is flagged.</li></ul></div>
+        <div class="card"><h4>Seam 2 · mediator chat (Claude Sonnet)</h4><ul>
+          <li><code>/chat</code> streams <code>anthropic.claude-sonnet-5-5</code> over SSE. The system prompt is the mediator persona plus <code>houseContext()</code>: roommates, bills, items, who owes whom.</li>
+          <li>Option C also uses this seam for "Ask Roomie for a fair price" at move-out.</li>
+          <li>Lambda holds the Bedrock IAM role; the browser only ever has a Cognito token.</li></ul></div>
+        <div class="card"><h4>What differs per option</h4><ul>
+          <li><b>A</b>: nothing extra on the backend.</li>
+          <li><b>B</b>: items also store <code>x, z, rotation</code>; move-out stores the agreed value.</li>
+          <li><b>C</b>: one extra prompt for fair-price suggestions; camera shots are client-only.</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recommendation">
+    <header><div class="eyebrow">Recommendation</div><h2>Build on A, borrow three ideas</h2></header>
+    <div class="rec">
+      <div>
+        <p class="lead">Use <b>Option A's fixed isometric diorama and view-offset drawers</b> as the base. It is the closest match to the reference image, it gives the smoothest version of "the room shifts when a tab opens", and it is the cheapest to build and keep consistent across screen sizes.</p>
+        <div class="borrow">
+          <div><i style="background:var(--c)">C</i><span><b>Phase lighting from C.</b> Morning for move-in, day for living, golden hour for move-out. It makes the three phases feel distinct without changing screens, and it costs almost nothing on a fixed camera.</span></div>
+          <div><i style="background:var(--c)">C</i><span><b>The in-world add card from C</b> in place of A's modal, so adding an item never covers the room. The step order can stay A's (photo, check type, details).</span></div>
+          <div><i style="background:var(--b)">B</i><span><b>The buyout value step from B.</b> Purchase price, a 20%/yr suggestion, or custom. Without it, whoever keeps a two-year-old couch pays full price. Optionally add B's drag-to-place later.</span></div>
+        </div>
+      </div>
+      <div class="why">
+        <div class="card"><h4>Why not B as the base</h4><p>The app-style columns and orbit are flexible, but they move the art direction away from the reference, the bottom sheets cover half the stage during the two key moments (adding and moving out), and resizing the canvas through every frame of a transition is the heaviest way to get the shift.</p></div>
+        <div class="card"><h4>Why not C as the base</h4><p>C is the most memorable demo, but camera moves on every action get slow when a household adds ten items, and the shots need per-viewport tuning. Its best parts (light per phase, the in-world card, drag to a person) transplant cleanly onto A.</p></div>
+        <div class="card"><h4>What would change this</h4><p>If item positions must match the real apartment, pick B's drag-to-place regardless of base. If this is mainly a pitch or demo, C is worth its cost.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="decide" data-lavish-revision="r2">
+    <header><div class="eyebrow">Round 1 decision</div><h2>Decided: A + borrowed ideas</h2></header>
+    <div class="decided"><span class="tick">✓</span><p>You picked <b>A + borrowed ideas</b> on this board, with notes: call the agent <b>Chad</b> and let him handle disputes and furniture questions; <b>no strict phases</b> (add furniture, see bills and talk to Chad from the start); <b>move-out is a button</b> on a piece of furniture. Round 2 above is that version.</p></div>
+  </section>
+
+  <footer>
+    Files (worktree <code>.lavish/</code>): <code>option-a-diorama.html</code>, <code>option-b-studio.html</code>, <code>option-c-cinematic.html</code>. Each is self-contained except for three.js 0.170 from jsDelivr. Shared room, models, ledger math and mocked AI are inlined from one source so the three stay comparable.
+  </footer>
+</main>
+<div class="lightbox" id="lightbox"><img alt=""><p></p></div>
+<script>
+  const FILES = { a: 'option-a-diorama.html', b: 'option-b-studio.html', c: 'option-c-cinematic.html' };
+  const HINTS = { a: 'Option A · press "How it\'s built" inside for its architecture note', b: 'Option B · drag to orbit; drag the glowing ghost to place items', c: 'Option C · watch the light change between phases' };
+  function setTab(k) {
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === k));
+    document.getElementById('liveFrame').src = FILES[k];
+    document.getElementById('liveOpen').href = FILES[k];
+    document.getElementById('liveHint').textContent = HINTS[k];
+  }
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+  document.querySelectorAll('[data-try]').forEach(b => b.onclick = () => { setTab(b.dataset.try); document.getElementById('live').scrollIntoView({ behavior: 'smooth' }); });
+  const lb = document.getElementById('lightbox');
+  document.querySelectorAll('[data-zoom]').forEach(f => f.addEventListener('click', () => {
+    lb.querySelector('img').src = f.dataset.zoom;
+    lb.querySelector('p').textContent = f.dataset.cap || f.querySelector('figcaption')?.textContent || '';
+    lb.classList.add('open');
+  }));
+  lb.onclick = () => lb.classList.remove('open');
+  addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+
+</script>
+</body>
+</html>

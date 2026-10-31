@@ -1,0 +1,1993 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>livingSpaces · Round 5 · a full living room</title>
+<style>/* ---------- shared tokens + components (inlined into every option) ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --bg: #f2ddd0; --bg-2: #ebd0c0; --paper: #fffaf6; --paper-2: #fbf2ea; --paper-3: #f6e8dd;
+  --ink: #3a2e28; --ink-2: #5b4a40; --muted: #8c786c; --line: rgba(58, 46, 40, .1); --line-2: rgba(58, 46, 40, .18);
+  --accent: #d6784d; --accent-2: #c4673e; --accent-soft: #f7dccb; --sage: #6fa38c; --lilac: #8f8fcf; --good: #4f9a76; --warn: #c9853a;
+  --shadow: 0 24px 60px -28px rgba(120, 66, 36, .45), 0 2px 8px rgba(120, 66, 36, .08);
+  --shadow-sm: 0 8px 22px -12px rgba(120, 66, 36, .45);
+  --r: 20px; --r-sm: 12px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow: hidden; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3, h4, p { margin: 0; }
+.rr-hidden { display: none !important; }
+.rr-muted { color: var(--muted); }
+.rr-small { font-size: 12px; }
+
+.rr-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 11px 18px; background: var(--accent); color: #fff; font-weight: 650; font-size: 14px; letter-spacing: .01em; box-shadow: 0 10px 22px -12px rgba(196, 103, 62, .9); transition: transform .18s ease, background .18s ease, box-shadow .18s ease, opacity .18s; white-space: nowrap; }
+.rr-btn:hover { background: var(--accent-2); transform: translateY(-1px); }
+.rr-btn:active { transform: translateY(0) scale(.98); }
+.rr-btn:disabled { opacity: .45; pointer-events: none; }
+.rr-btn.ghost { background: transparent; color: var(--ink-2); box-shadow: none; border: 1px solid var(--line-2); }
+.rr-btn.ghost:hover { background: rgba(255, 255, 255, .6); }
+.rr-btn.soft { background: var(--accent-soft); color: var(--accent-2); box-shadow: none; }
+.rr-btn.dark { background: var(--ink); box-shadow: 0 10px 22px -12px rgba(30, 20, 10, .8); }
+.rr-btn.sm { padding: 7px 12px; font-size: 13px; }
+.rr-btn.block { width: 100%; }
+.rr-btn svg { flex: none; }
+
+.rr-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 650; background: var(--paper-3); color: var(--ink-2); white-space: nowrap; }
+.rr-pill.ai { background: #efe9fb; color: #5d4fa8; }
+.rr-pill.good { background: #e2f1e8; color: #2f7553; }
+.rr-pill.warn { background: #fbecd9; color: #9a5d1d; }
+
+.rr-av { --s: 28px; --c: #ccc; display: inline-grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; background: var(--c); color: #fff; font-weight: 750; font-size: calc(var(--s) * .44); box-shadow: 0 0 0 2px var(--paper); flex: none; }
+.rr-avs { display: inline-flex; }
+.rr-avs .rr-av + .rr-av { margin-left: -7px; }
+
+.rr-field { display: grid; gap: 6px; font-size: 12px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.rr-field > span:first-child { padding-left: 2px; }
+.rr-input { width: 100%; min-width: 0; border: 1px solid var(--line-2); background: #fff; border-radius: var(--r-sm); padding: 10px 12px; font-size: 15px; font-weight: 550; color: var(--ink); text-transform: none; letter-spacing: 0; outline: none; transition: border-color .15s, box-shadow .15s; }
+.rr-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(214, 120, 77, .15); }
+.rr-money { position: relative; }
+.rr-money > b { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 600; font-size: 15px; }
+.rr-money > .rr-input { padding-left: 24px; }
+.rr-grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.rr-stack { display: grid; gap: 14px; }
+
+.rr-seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--paper-3); gap: 2px; text-transform: none; letter-spacing: 0; }
+.rr-seg button { border: 0; background: transparent; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 650; color: var(--muted); }
+.rr-seg button.on { background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); }
+
+.rr-splits { display: grid; gap: 6px; text-transform: none; letter-spacing: 0; }
+.rr-split-row { display: grid; grid-template-columns: auto minmax(0, 1fr) 110px 44px; align-items: center; gap: 10px; padding: 6px 8px 6px 6px; border-radius: 14px; background: #fff; border: 1px solid var(--line); transition: opacity .2s; }
+.rr-split-row.off { opacity: .45; }
+.rr-split-row .who { font-size: 14px; font-weight: 650; color: var(--ink); display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rr-split-row .who input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.rr-split-row .pct { font-size: 12px; color: var(--muted); text-align: right; font-weight: 600; }
+.rr-split-row .rr-input { padding: 6px 8px 6px 20px; font-size: 14px; }
+.rr-split-row .rr-money > b { left: 8px; font-size: 13px; }
+.rr-split-sum { font-size: 12px; font-weight: 650; text-transform: none; letter-spacing: 0; }
+.rr-split-sum.ok { color: var(--good); }
+.rr-split-sum.bad { color: var(--warn); }
+
+.rr-cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.rr-cat { position: relative; display: grid; justify-items: center; gap: 6px; padding: 12px 6px 10px; border-radius: 16px; border: 1.5px solid var(--line-2); background: #fff; font-size: 12px; font-weight: 700; color: var(--ink-2); transition: all .18s; }
+.rr-cat:hover { border-color: var(--accent); }
+.rr-cat.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-2); box-shadow: 0 0 0 3px rgba(214, 120, 77, .12); }
+.rr-cat .p { position: absolute; top: 5px; right: 6px; font-size: 10px; font-weight: 700; color: var(--muted); }
+.rr-cat.on .p { color: var(--accent-2); }
+
+.rr-drop { display: grid; place-items: center; gap: 8px; text-align: center; border: 2px dashed var(--line-2); border-radius: var(--r); padding: 26px 16px; background: rgba(255, 255, 255, .55); cursor: pointer; transition: all .18s; }
+.rr-drop:hover, .rr-drop.over { border-color: var(--accent); background: #fff; }
+.rr-drop .ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-2); }
+.rr-drop b { font-size: 15px; }
+.rr-drop input { display: none; }
+.rr-samples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.rr-sample { border: 1.5px solid transparent; border-radius: 12px; padding: 0; overflow: hidden; background: #fff; aspect-ratio: 4 / 3; box-shadow: var(--shadow-sm); transition: all .18s; position: relative; }
+.rr-sample:hover { border-color: var(--accent); transform: translateY(-2px); }
+.rr-sample img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rr-sample span { position: absolute; left: 4px; bottom: 4px; font-size: 10px; font-weight: 700; background: rgba(255, 255, 255, .85); border-radius: 6px; padding: 1px 5px; }
+
+.rr-scan { position: relative; overflow: hidden; border-radius: 14px; }
+.rr-scan img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rr-scan.on::after { content: ""; position: absolute; left: 0; right: 0; height: 40%; top: -40%; background: linear-gradient(180deg, transparent, rgba(255, 210, 180, .55), transparent); animation: rr-scan 1.1s ease-in-out infinite; }
+@keyframes rr-scan { to { top: 100%; } }
+.rr-thinking { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 650; color: #5d4fa8; }
+.rr-dots { display: inline-flex; gap: 3px; }
+.rr-dots i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: rr-bounce 1s infinite ease-in-out; }
+.rr-dots i:nth-child(2) { animation-delay: .15s; }
+.rr-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes rr-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
+
+/* panel content: chat + bills */
+.rr-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.rr-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+.rr-panel-head h3 { font-size: 18px; font-weight: 750; letter-spacing: -.01em; }
+.rr-panel-head p { font-size: 12px; color: var(--muted); margin-top: 3px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.rr-panel-body { flex: 1; min-height: 0; overflow: auto; padding: 16px 20px 20px; scrollbar-width: thin; }
+
+.rr-chatlog { display: grid; gap: 10px; align-content: start; }
+.rr-msg { max-width: 88%; padding: 10px 13px; border-radius: 16px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.rr-msg.ai { background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 6px; justify-self: start; }
+.rr-msg.me { background: var(--accent); color: #fff; border-bottom-right-radius: 6px; justify-self: end; }
+.rr-msg.ai b { color: var(--accent-2); }
+.rr-msg.ai.err { border-color: rgba(196, 82, 62, .45); background: #fff6f3; }
+.rr-msg.ai.err b { color: #a5402e; }
+.rr-msg .rr-chip { margin-top: 8px; }
+.rr-msg-meta { font-size: 10px; color: var(--muted); font-weight: 650; margin: 2px 4px -4px; }
+.rr-suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 20px 0; }
+.rr-chip { border: 1px solid var(--line-2); background: #fff; border-radius: 999px; padding: 6px 11px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); transition: all .15s; text-align: left; }
+.rr-chip:hover { border-color: var(--accent); color: var(--accent-2); }
+.rr-chatbar { display: flex; gap: 8px; padding: 12px 16px 16px; }
+.rr-chatbar .rr-input { border-radius: 999px; padding: 11px 16px; }
+.rr-chatbar .rr-btn { padding: 0; width: 44px; height: 44px; flex: none; }
+.rr-ai-foot { font-size: 11px; color: var(--muted); padding: 0 20px 12px; }
+
+.rr-bal { border-radius: 18px; padding: 16px; background: linear-gradient(135deg, #fff, var(--paper-2)); border: 1px solid var(--line); display: grid; gap: 10px; }
+.rr-bal .big { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.rr-bal .big.pos { color: var(--good); }
+.rr-bal .big.neg { color: var(--accent-2); }
+.rr-xfer { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 7px 8px; border-radius: 12px; background: rgba(255, 255, 255, .7); }
+.rr-xfer .arrow { color: var(--muted); }
+.rr-xfer .amt { font-weight: 800; }
+.rr-xfer .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rr-xfer .rr-btn { padding: 4px 10px; font-size: 11.5px; }
+.rr-sec { display: flex; align-items: center; justify-content: space-between; margin: 20px 0 8px; font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.rr-bills { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.rr-bill { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 14px; background: #fff; border: 1px solid var(--line); animation: rr-in .35s ease both; }
+.rr-bill .ic { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--paper-3); color: var(--ink-2); }
+.rr-bill .t { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rr-bill .s { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+.rr-bill .a { font-size: 14px; font-weight: 800; text-align: right; }
+.rr-bill .a small { display: block; font-size: 11px; color: var(--muted); font-weight: 600; }
+.rr-addbill { display: grid; gap: 10px; padding: 12px; border-radius: 16px; background: var(--paper-2); border: 1px solid var(--line); margin-bottom: 8px; animation: rr-in .3s ease both; }
+.rr-who-pick { display: flex; gap: 6px; flex-wrap: wrap; }
+.rr-who-pick label { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 999px; background: #fff; border: 1px solid var(--line-2); font-size: 13px; font-weight: 650; text-transform: none; letter-spacing: 0; color: var(--ink); cursor: pointer; }
+.rr-who-pick input { display: none; }
+.rr-who-pick label:has(input:not(:checked)) { opacity: .45; }
+.rr-stake { display: grid; gap: 8px; }
+.rr-stake-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) 70px; gap: 8px; align-items: center; font-size: 13px; font-weight: 650; }
+.rr-stake-row .bar { height: 8px; border-radius: 99px; background: var(--paper-3); overflow: hidden; }
+.rr-stake-row .bar i { display: block; height: 100%; border-radius: 99px; transition: width .5s ease; }
+.rr-stake-row .v { text-align: right; }
+.rr-empty-note { font-size: 13px; color: var(--muted); padding: 12px; border-radius: 14px; border: 1px dashed var(--line-2); text-align: center; }
+
+.rr-toast-wrap { position: fixed; left: 50%; top: 78px; transform: translateX(-50%); display: grid; gap: 8px; z-index: 200; pointer-events: none; }
+.rr-toast { background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 650; box-shadow: var(--shadow); animation: rr-toast .35s cubic-bezier(.2, .9, .3, 1.3) both; display: flex; gap: 8px; align-items: center; }
+.rr-toast.out { animation: rr-toast-out .3s ease both; }
+@keyframes rr-toast { from { opacity: 0; transform: translateY(-12px) scale(.96); } }
+@keyframes rr-toast-out { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes rr-in { from { opacity: 0; transform: translateY(6px); } }
+
+/* reviewer shortcuts + architecture note */
+.rr-review { display: inline-flex; gap: 6px; align-items: center; padding: 4px; border-radius: 999px; border: 1px dashed rgba(58, 46, 40, .3); background: rgba(255, 255, 255, .45); backdrop-filter: blur(6px); }
+.rr-review > span { font-size: 10.5px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 0 4px 0 8px; }
+.rr-review button { border: 0; background: #fff; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 650; color: var(--ink-2); box-shadow: var(--shadow-sm); }
+.rr-review button:hover { color: var(--accent-2); }
+.rr-arch-back { position: fixed; inset: 0; background: rgba(58, 40, 30, .28); backdrop-filter: blur(4px); display: grid; place-items: center; z-index: 300; animation: rr-fade .25s ease both; padding: 20px; }
+@keyframes rr-fade { from { opacity: 0; } }
+.rr-arch { width: min(820px, 100%); max-height: calc(100vh - 40px); overflow: auto; background: var(--paper); border-radius: 26px; box-shadow: var(--shadow); padding: 24px 26px; animation: rr-pop .35s cubic-bezier(.2, .9, .3, 1.2) both; }
+@keyframes rr-pop { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+.rr-arch h2 { font-size: 20px; letter-spacing: -.01em; }
+.rr-arch .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.rr-arch svg { width: 100%; height: auto; margin: 14px 0 6px; }
+.rr-arch ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.rr-arch code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; background: var(--paper-3); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
+.rr-arch .close { float: right; }
+</style>
+<style>
+  :root { --dw: min(392px, 34vw); }
+  body { background: radial-gradient(1200px 820px at 52% 42%, #f7e6db 0%, #f0d6c6 60%, #e9c9b6 100%); transition: background 1.4s; }
+  body.golden { background: radial-gradient(1200px 820px at 58% 40%, #fbe3cf 0%, #f3cba9 60%, #e9b38e 100%); }
+  #scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; outline: none; }
+  body.hovering #scene { cursor: pointer; }
+
+  .topbar { position: fixed; inset: 0 0 auto 0; display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; z-index: 40; pointer-events: none; }
+  .topbar > * { pointer-events: auto; }
+  .brand { display: flex; gap: 10px; align-items: center; }
+  .logo { width: 34px; height: 34px; border-radius: 11px; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 14px; letter-spacing: -.04em; }
+  .brand b { display: block; font-size: 15px; letter-spacing: -.01em; }
+  .brand small { color: var(--muted); font-size: 12px; font-weight: 650; }
+  .roomstat { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: center; padding: 8px 16px; border-radius: 999px; background: rgba(255, 250, 246, .72); backdrop-filter: blur(8px); box-shadow: var(--shadow-sm); font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+  .roomstat small { color: var(--muted); font-weight: 650; font-size: 12.5px; }
+  .tr { display: flex; gap: 10px; align-items: center; }
+
+  /* in-world add marker (borrowed from C) */
+  .marker { position: fixed; left: 0; top: 0; z-index: 20; transform: translate(-50%, -100%); display: grid; justify-items: center; pointer-events: none; transition: opacity .35s; }
+  .marker.gone { opacity: 0; }
+  .marker.away { opacity: 0; pointer-events: none; }
+  .marker.away .pill { pointer-events: none; }
+  .marker .pill { pointer-events: auto; border: 0; display: flex; gap: 8px; align-items: center; padding: 13px 20px 13px 14px; border-radius: 999px; background: var(--paper); box-shadow: var(--shadow); font-size: 15px; font-weight: 750; color: var(--ink); animation: float 3s ease-in-out infinite; transition: padding .3s, font-size .3s, opacity .3s, scale .3s; }
+  .marker .pill i { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; }
+  .marker.compact .pill { padding: 8px; font-size: 0; gap: 0; }
+  .marker.busy .pill { opacity: 0; scale: .5; pointer-events: none; }
+  .marker .stem { width: 2px; height: 40px; background: linear-gradient(rgba(214, 120, 77, .7), rgba(214, 120, 77, 0)); }
+  .marker.compact .stem { height: 26px; }
+  .marker .dot { width: 14px; height: 6px; border-radius: 50%; background: rgba(214, 120, 77, .65); box-shadow: 0 0 0 6px rgba(214, 120, 77, .15); }
+  .marker.busy .dot { animation: pulse 1.4s ease-out infinite; }
+  @keyframes float { 50% { transform: translateY(-6px); } }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(214, 120, 77, .45); } 100% { box-shadow: 0 0 0 18px rgba(214, 120, 77, 0); } }
+  .hint { position: fixed; left: 50%; bottom: 12vh; transform: translateX(-50%); font-size: 14px; font-weight: 650; color: var(--ink-2); background: rgba(255, 250, 246, .7); padding: 9px 16px; border-radius: 999px; backdrop-filter: blur(6px); transition: opacity .4s; z-index: 15; white-space: nowrap; }
+
+  /* add card anchored next to the marker */
+  .acard { position: fixed; left: 0; top: 0; z-index: 45; width: 392px; max-width: calc(100vw - 24px); opacity: 0; pointer-events: none; transform: scale(.85); transform-origin: 0 50%; transition: opacity .3s, transform .5s cubic-bezier(.22, 1.25, .36, 1); }
+  .acard.flip { transform-origin: 100% 50%; }
+  .acard.open { opacity: 1; pointer-events: auto; transform: none; }
+  .acard .in { background: rgba(255, 251, 247, .96); backdrop-filter: blur(16px); border-radius: 26px; box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, .85); display: flex; flex-direction: column; max-height: calc(100vh - 110px); overflow: hidden; }
+  .acard .tail { position: absolute; top: var(--ty, 50%); left: -8px; width: 18px; height: 18px; background: rgba(255, 251, 247, .96); transform: translateY(-50%) rotate(45deg); border-radius: 4px; }
+  .acard.flip .tail { left: auto; right: -8px; }
+  .ahead { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px 0; }
+  .steps { display: flex; gap: 5px; align-items: center; font-size: 11.5px; font-weight: 750; color: var(--muted); }
+  .steps i { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: var(--paper-3); color: var(--muted); font-size: 10.5px; transition: all .3s; }
+  .steps i.on { background: var(--accent); color: #fff; }
+  .steps i.done { background: var(--good); color: #fff; }
+  .steps b { margin: 0 4px 0 1px; font-weight: 700; }
+  .steps .sep { width: 12px; height: 2px; background: var(--line-2); border-radius: 2px; }
+  .abody { padding: 14px 18px; overflow: auto; flex: 1; min-height: 0; }
+  .abody h2 { font-size: 19px; letter-spacing: -.02em; margin-bottom: 3px; }
+  .abody .lead { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .astep { display: none; animation: stepIn .4s cubic-bezier(.22, 1, .36, 1) both; }
+  .astep.on { display: block; }
+  @keyframes stepIn { from { opacity: 0; transform: translateX(18px); } }
+  .astep .rr-samples { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ident { display: grid; gap: 12px; }
+  .ident .rr-scan { aspect-ratio: 16 / 9; box-shadow: var(--shadow-sm); }
+  .verdict .v { font-size: 18px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+  .verdict .v em { font-style: normal; color: var(--accent-2); }
+  .mini { display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 14px; background: var(--paper-2); margin-bottom: 14px; }
+  .mini img { width: 58px; height: 44px; object-fit: cover; border-radius: 9px; }
+  .mini b { font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  .afoot { display: flex; justify-content: space-between; gap: 10px; padding: 12px 18px 16px; border-top: 1px solid var(--line); }
+  .x { border: 0; background: var(--paper-3); width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); flex: none; }
+
+  /* drawers (from A), open from the start */
+  .drawer { position: fixed; top: 76px; bottom: 16px; width: var(--dw); z-index: 30; transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+  .drawer .sheet { height: 100%; background: rgba(255, 250, 246, .93); backdrop-filter: blur(14px); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid rgba(255, 255, 255, .8); }
+  .drawer.left { left: 16px; transform: translateX(calc(-100% - 90px)); }
+  .drawer.right { right: 16px; transform: translateX(calc(100% + 90px)); }
+  body.in .drawer.left { transform: translateX(calc(-100% - 16px)); }
+  body.in .drawer.right { transform: translateX(calc(100% + 16px)); }
+  body.in .drawer.open { transform: translateX(0); }
+  .tab { position: absolute; top: 50%; width: 46px; padding: 18px 0 16px; transform: translateY(-50%); border: 0; background: var(--paper); box-shadow: var(--shadow-sm); display: grid; justify-items: center; gap: 10px; color: var(--ink-2); font-weight: 750; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; transition: background .2s, color .2s; }
+  .tab:hover { color: var(--accent-2); }
+  .tab span { writing-mode: vertical-rl; transform: rotate(180deg); }
+  .drawer.left .tab { right: -46px; border-radius: 0 16px 16px 0; }
+  .drawer.right .tab { left: -46px; border-radius: 16px 0 0 16px; }
+  .drawer.open .tab { background: var(--ink); color: #fff; }
+  .tab .badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #fff; font-size: 10.5px; display: grid; place-items: center; letter-spacing: 0; }
+  .tab .chad { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #8f7fd6, #5d4fa8); color: #fff; display: grid; place-items: center; font-size: 12px; letter-spacing: 0; font-weight: 800; }
+
+  /* item popover (from A) with B's buyout value */
+  .pop { position: fixed; left: 0; top: 0; z-index: 50; width: 340px; transform: translate(-50%, calc(-100% - 16px)); transition: opacity .25s, transform .35s cubic-bezier(.22, 1.3, .36, 1); opacity: 0; pointer-events: none; }
+  .pop.open { opacity: 1; pointer-events: auto; }
+  .pop.below { transform: translate(-50%, 16px); }
+  .pop-card { background: var(--paper); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; transition: height .45s cubic-bezier(.22, 1, .36, 1); }
+  .pop-track { display: flex; align-items: flex-start; width: 200%; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+  .pop-card.p2 .pop-track { transform: translateX(-50%); }
+  .pg { width: 50%; padding: 14px; display: grid; gap: 12px; align-content: start; }
+  .pop-top { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+  .pop-top img { width: 92px; height: 70px; object-fit: cover; border-radius: 12px; }
+  .pop-top h4 { font-size: 16px; margin-top: 5px; line-height: 1.2; }
+  .pop-top p { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+  .owners { display: grid; gap: 6px; }
+  .owner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13px; font-weight: 650; }
+  .owner .bar { grid-column: 2 / 4; height: 5px; border-radius: 9px; background: var(--paper-3); overflow: hidden; margin-top: -4px; }
+  .owner .bar i { display: block; height: 100%; }
+  .acts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  .pop .arrow { position: absolute; left: 50%; bottom: -7px; width: 16px; height: 16px; background: var(--paper); transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
+  .pop.below .arrow { bottom: auto; top: -7px; }
+  .pg2 h4 { font-size: 16px; }
+  .backlink { border: 0; background: none; padding: 0; font-size: 12.5px; font-weight: 700; color: var(--muted); justify-self: start; }
+  .keepers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .keeper { border: 1.5px solid var(--line-2); background: #fff; border-radius: 16px; padding: 10px 4px 8px; display: grid; justify-items: center; gap: 6px; font-size: 13px; font-weight: 700; transition: all .18s; }
+  .keeper:hover { border-color: var(--accent); }
+  .keeper.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px rgba(214, 120, 77, .14); }
+  .keeper small { font-size: 10.5px; color: var(--muted); font-weight: 650; }
+  .value { display: grid; gap: 7px; padding: 10px 12px; border-radius: 14px; background: var(--paper-2); }
+  .value .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .value .amt { font-size: 20px; font-weight: 800; letter-spacing: -.01em; }
+  .value input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+  .value .presets { display: flex; gap: 5px; flex-wrap: wrap; }
+  .value .presets .rr-btn { padding: 5px 9px; font-size: 12px; }
+  .value .presets .rr-btn.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .xfers { display: grid; gap: 6px; }
+  .xfers .rr-xfer { grid-template-columns: auto minmax(0, 1fr) auto; background: var(--paper-2); }
+  .note { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+
+  .tip { position: fixed; z-index: 35; pointer-events: none; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; transform: translate(-50%, calc(-100% - 12px)); opacity: 0; transition: opacity .15s; white-space: nowrap; }
+  .tip.on { opacity: 1; }
+
+  .end { position: fixed; left: 50%; top: 50%; z-index: 55; width: min(460px, calc(100vw - 32px)); transform: translate(-50%, -40%) scale(.96); opacity: 0; pointer-events: none; transition: all .7s cubic-bezier(.22, 1.2, .36, 1); background: var(--paper); border-radius: 28px; box-shadow: var(--shadow); padding: 26px; display: grid; gap: 14px; text-align: center; }
+  .end.open { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
+  .end h2 { font-size: 26px; letter-spacing: -.02em; }
+  .end .kept { display: grid; gap: 8px; text-align: left; }
+  .end .kept div { display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 650; padding: 8px 10px; background: var(--paper-2); border-radius: 14px; }
+  .end .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+  .login { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: radial-gradient(900px 600px at 50% 40%, #f7e6db, #ecccb9); transition: opacity .8s ease, visibility .8s; }
+  .login.gone { opacity: 0; visibility: hidden; }
+  .login form { width: min(360px, calc(100vw - 32px)); background: var(--paper); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); display: grid; gap: 14px; transition: transform .8s cubic-bezier(.6, 0, .3, 1); }
+  .login.gone form { transform: translateY(-30px) scale(.94); }
+  .login h1 { font-size: 26px; letter-spacing: -.03em; }
+  .login p { color: var(--muted); font-size: 14px; margin-top: -8px; }
+
+  /* round 3: formats, conversion pipeline, stacks */
+  .rr-cats { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .rr-cat { padding: 10px 2px 8px; font-size: 11px; }
+  .fmts { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 2px; }
+  .fmts span { font-size: 10.5px; font-weight: 750; padding: 2px 7px; border-radius: 999px; background: var(--paper-3); color: var(--ink-2); letter-spacing: .02em; }
+  .fmts span.hl { background: var(--accent-soft); color: var(--accent-2); }
+  .rr-sample .fmt { position: absolute; right: 4px; top: 4px; left: auto; bottom: auto; font-size: 9.5px; font-weight: 800; background: var(--ink); color: #fff; border-radius: 5px; padding: 1px 5px; letter-spacing: .04em; }
+  .roomstat { position: static; transform: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; margin: 0 12px; }
+  .topbar .brand, .topbar .tr { flex: none; }
+  @media (max-width: 1360px) { .roomstat small { display: none; } }
+  .samples3 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+  .samples3 .rr-sample > span:not(.fmt) { display: none; }
+  .rr-cat .p { font-size: 9px; }
+  .pipe { list-style: none; margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--paper-2); display: grid; gap: 7px; }
+  .pipe li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 12.5px; line-height: 1.35; color: var(--muted); }
+  .pipe li b { color: var(--ink); font-weight: 750; display: block; font-size: 13px; }
+  .pipe li code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; background: #fff; padding: 0 4px; border-radius: 4px; }
+  .pipe .st { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 1.5px solid var(--line-2); color: #fff; font-size: 11px; font-weight: 800; }
+  .pipe li.active .st { border-color: var(--accent); border-top-color: transparent; animation: spin .8s linear infinite; }
+  .pipe li.done .st { background: var(--good); border-color: var(--good); }
+  .pipe li.err .st { background: #c4523e; border-color: #c4523e; }
+  .pipe li.err b { color: #a5402e; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 6px 6px 10px; border-radius: 14px; background: var(--paper-2); font-size: 12.5px; font-weight: 750; color: var(--ink-2); }
+  .pager .nav { display: flex; gap: 6px; align-items: center; }
+  .pager button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; display: grid; place-items: center; color: var(--ink); transition: all .15s; }
+  .pager button:hover { border-color: var(--accent); color: var(--accent-2); }
+  .pager .dots { display: flex; gap: 4px; }
+  .pager .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); }
+  .pager .dots i.on { background: var(--accent); }
+  .pg1in { display: grid; gap: 12px; animation: none; }
+  .pg1in.from-r { animation: slideR .32s cubic-bezier(.22, 1, .36, 1); }
+  .pg1in.from-l { animation: slideL .32s cubic-bezier(.22, 1, .36, 1); }
+  @keyframes slideR { from { opacity: 0; transform: translateX(24px); } }
+  @keyframes slideL { from { opacity: 0; transform: translateX(-24px); } }
+  .livepill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; font-size: 12px; font-weight: 750; background: var(--paper-3); color: var(--ink-2); white-space: nowrap; }
+  .livepill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .livepill.ok { background: #e2f1e8; color: #2f7553; } .livepill.ok::before { background: #3f9a6c; box-shadow: 0 0 0 3px rgba(63, 154, 108, .2); }
+  .livepill.bad { background: #fbe4dd; color: #a5402e; } .livepill.bad::before { background: #c4523e; }
+  .pipe .acts2 { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .reason { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 4px; }
+  .chip { position: fixed; z-index: 19; transform: translate(-50%, -100%); pointer-events: none; background: var(--ink); color: #fff; font-size: 11.5px; font-weight: 800; padding: 3px 8px; border-radius: 999px; box-shadow: var(--shadow-sm); display: flex; gap: 4px; align-items: center; transition: opacity .3s; }
+  @media (max-width: 760px) { .brand div, .tr .rr-avs, .rr-review > span, .roomstat small { display: none; } :root { --dw: calc(100vw - 80px); } }
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="scene" tabindex="0" aria-label="3D room"></canvas>
+
+<header class="topbar">
+  <div class="brand"><span class="logo">lS</span><div><b>livingSpaces</b><small>Apt 4B · round 5 · live AI</small></div></div>
+  <div class="roomstat" id="roomstat"></div>
+  <div class="tr"><div class="rr-review"><span>Reviewer</span><button id="fillBtn">Fill room</button><button id="resetBtn">Reset</button></div><span class="livepill" id="livePill" title="Local backend status">checking…</span><span class="rr-avs" id="avs"></span><button class="rr-btn ghost sm" id="archBtn"></button></div>
+</header>
+
+<div class="marker gone" id="marker"><button class="pill" id="addPill"><i></i>Add</button><span class="stem"></span><span class="dot"></span></div>
+<p class="hint" id="hint" style="opacity:0">Add the first thing you all chipped in for, or say hi to Chad on the left.</p>
+
+<div class="acard" id="acard"><div class="in">
+  <div class="ahead"><div class="steps" id="steps"></div><button class="x" id="aClose" aria-label="Close"></button></div>
+  <div class="abody">
+    <section class="astep" data-s="1"><h2>Snap the item</h2><p class="lead">Any phone photo works. It's converted to PNG on your device, then Claude Haiku works out what it is.</p><div id="photoRoot"></div></section>
+    <section class="astep" data-s="2"><div class="ident"><div class="rr-scan" id="scan"><img id="scanImg" alt="Converted PNG"></div><ol class="pipe" id="pipe"></ol><div class="verdict"><div id="verdict"></div><div id="catRoot"></div></div></div></section>
+    <section class="astep" data-s="3"><div class="mini" id="mini"></div><div id="formRoot"></div></section>
+  </div>
+  <div class="afoot"><button class="rr-btn ghost" id="aBack">Back</button><button class="rr-btn" id="aNext">Next</button></div>
+</div><i class="tail"></i></div>
+
+<aside class="drawer left" id="drawerL"><div class="sheet" id="chatRoot"></div><button class="tab" data-side="L"></button></aside>
+<aside class="drawer right" id="drawerR"><div class="sheet" id="billsRoot"></div><button class="tab" data-side="R"></button></aside>
+
+<div class="pop" id="pop"><div class="pop-card" id="popCard"><div class="pop-track"><div class="pg" id="pg1"></div><div class="pg pg2" id="pg2"></div></div></div><i class="arrow"></i></div>
+<div class="tip" id="tip"></div>
+<div id="chips"></div>
+<div class="end" id="end"></div>
+
+<div class="login" id="login">
+  <form id="loginForm">
+    <span class="logo" style="width:44px;height:44px;border-radius:14px;font-size:17px">lS</span>
+    <h1>Welcome to livingSpaces</h1><p>Sign in to Apt 4B (mock login)</p>
+    <label class="rr-field"><span>Email</span><input class="rr-input" value="alex@livingspaces.app"></label>
+    <label class="rr-field"><span>Password</span><input class="rr-input" type="password" value="hunter22"></label>
+    <button class="rr-btn block">Sign in</button>
+  </form>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* =====================================================================
+   Shared mock data, ledger math, mocked AI, room + generic models.
+   Inlined into every option so each mockup stays a single HTML file.
+   ===================================================================== */
+
+const ROOMMATES = [
+  { id: 'alex', name: 'Alex', color: '#e0895f', you: true },
+  { id: 'maya', name: 'Maya', color: '#6fa38c' },
+  { id: 'jordan', name: 'Jordan', color: '#8f8fcf' },
+];
+const RM = Object.fromEntries(ROOMMATES.map(r => [r.id, r]));
+const ALL = ROOMMATES.map(r => r.id);
+const ME = 'alex';
+
+const CATEGORIES = [
+  { id: 'couch', label: 'Couch' },
+  { id: 'tv', label: 'TV' },
+  { id: 'coffee_table', label: 'Coffee table' },
+  { id: 'chair', label: 'Chair' },
+];
+const CAT = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+const catWord = id => id === 'tv' ? 'TV' : CAT[id].label.toLowerCase();
+
+const ICONS = {
+  couch: '<path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M2 13a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/><path d="M5 18v2M19 18v2"/>',
+  tv: '<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/>',
+  coffee_table: '<path d="M2.5 10h19"/><path d="M5 10l-1.2 8M19 10l1.2 8M8 10v3.5h8V10"/>',
+  chair: '<path d="M7.5 3h9v8.5h-9z"/><path d="M6 11.5h12v3H6z"/><path d="M7 14.5 6 21M17 14.5l1 6.5"/>',
+  rug: '<path d="M4 7h16v10H4z"/><path d="M7 10h10v4H7z"/><path d="M4 7l-1.5-1M20 7l1.5-1M4 17l-1.5 1M20 17l1.5 1"/>',
+  lamp: '<path d="M8 3h8l2 6H6z"/><path d="M12 9v11M8 21h8"/>',
+  bookshelf: '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M4 9h16M4 15h16M8 3v6M11 9v6M15 15v6"/>',
+  game_console: '<path d="M7 9h10a4 4 0 0 1 3.9 4.9l-.6 2.7a2 2 0 0 1-3.4.9L15 15H9l-1.9 2.5a2 2 0 0 1-3.4-.9l-.6-2.7A4 4 0 0 1 7 9z"/><path d="M8 11.5v3M6.5 13h3M15.5 12h.01M17.5 14h.01"/>',
+  mini_fridge: '<rect x="6" y="3" width="12" height="18" rx="1.5"/><path d="M6 9h12M9 5.5v1.5M9 11.5v3"/>',
+  speaker: '<rect x="6" y="2.5" width="12" height="19" rx="2"/><circle cx="12" cy="14.5" r="3.5"/><circle cx="12" cy="7" r="1.6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+  receipt: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  box: '<path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  send: '<path d="M4 12 20 4l-6 16-3-7z"/>',
+  check: '<path d="M5 12.5 10 17l9-10"/>',
+  bolt: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  rent: '<path d="M4 11 12 4l8 7v9H4z"/><path d="M10 20v-5h4v5"/>',
+  utility: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  wifi: '<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5h.01"/>',
+  groceries: '<path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+  payment: '<path d="M3 7h18v10H3z"/><path d="M3 11h18"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M15 8l2 2"/>',
+  rotate: '<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
+  drag: '<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>',
+  moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+};
+const icon = (id, s = 20, w = 1.8) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[id] || ''}</svg>`;
+
+const SAMPLES = [
+  { key: 'sofa', file: 'IMG_2041.jpg', draw: 'couch', truth: 'couch', guess: 'couch', conf: .94, name: 'Grey linen sofa', price: 899, date: '2026-08-28' },
+  { key: 'tv', file: 'IMG_2044.jpg', draw: 'tv', truth: 'tv', guess: 'tv', conf: .97, name: '55" TV + console', price: 549.99, date: '2026-08-30' },
+  { key: 'table', file: 'IMG_2047.jpg', draw: 'coffee_table', truth: 'coffee_table', guess: 'coffee_table', conf: .88, name: 'Oak coffee table', price: 180, date: '2026-09-02' },
+  { key: 'armchair', file: 'IMG_2050.jpg', draw: 'armchair', truth: 'chair', guess: 'couch', conf: .58, name: 'Reading armchair', price: 260, date: '2026-09-05' },
+];
+
+const SEED_BILLS = [
+  { id: 'b1', name: 'October rent', amount: 2850, paidBy: 'alex', among: ALL, date: '2026-10-01', kind: 'rent' },
+  { id: 'b2', name: 'PG&E electric', amount: 96.4, paidBy: 'maya', among: ALL, date: '2026-10-12', kind: 'utility' },
+  { id: 'b3', name: 'Fiber internet', amount: 70, paidBy: 'jordan', among: ALL, date: '2026-10-15', kind: 'wifi' },
+  { id: 'b4', name: 'Costco run', amount: 128.55, paidBy: 'alex', among: ['alex', 'maya'], date: '2026-10-20', kind: 'groceries' },
+];
+
+/* one shared in-memory household; components subscribe to changes */
+const house = {
+  items: [], bills: SEED_BILLS.map(b => ({ ...b, among: [...b.among] })), buyouts: [], keptBy: {},
+  subs: new Set(),
+  on(fn) { this.subs.add(fn); return () => this.subs.delete(fn); },
+  changed() { this.subs.forEach(fn => fn()); },
+};
+
+/* ---------- small utils ---------- */
+const round2 = n => Math.round(n * 100) / 100;
+const money = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+const money2 = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const uid = (p = 'id') => p + '_' + Math.random().toString(36).slice(2, 8);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const today = () => new Date().toISOString().slice(0, 10);
+const fmtDate = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+const h = html => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const av = (id, s = 28) => { const r = RM[id]; return `<span class="rr-av" style="--c:${r.color};--s:${s}px" title="${r.name}">${r.name[0]}</span>`; };
+const nameOf = id => RM[id].you ? 'You' : RM[id].name;
+const hashStr = s => { let x = 7; for (const c of s) x = (x * 31 + c.charCodeAt(0)) >>> 0; return x; };
+
+function equalSplit(total, ids = ALL) {
+  const cents = Math.round(total * 100), base = Math.floor(cents / ids.length);
+  let rem = cents - base * ids.length;
+  const out = {};
+  ids.forEach(id => { out[id] = (base + (rem-- > 0 ? 1 : 0)) / 100; });
+  return out;
+}
+const sumVals = o => round2(Object.values(o).reduce((a, b) => a + (+b || 0), 0));
+
+/* net position per roommate: + means the house owes them */
+function netsFrom(bills, transfers = []) {
+  const n = Object.fromEntries(ALL.map(id => [id, 0]));
+  for (const b of bills) {
+    n[b.paidBy] += b.amount;
+    for (const [id, s] of Object.entries(equalSplit(b.amount, b.among))) n[id] -= s;
+  }
+  for (const t of transfers) { n[t.from] -= t.amount; n[t.to] += t.amount; }
+  for (const id of ALL) n[id] = round2(n[id]);
+  return n;
+}
+function settleUp(nets) {
+  const cred = [], debt = [];
+  for (const [id, v] of Object.entries(nets)) { if (v > .004) cred.push([id, v]); else if (v < -.004) debt.push([id, -v]); }
+  cred.sort((a, b) => b[1] - a[1]); debt.sort((a, b) => b[1] - a[1]);
+  const out = [];
+  let i = 0, j = 0;
+  while (i < debt.length && j < cred.length) {
+    const amt = round2(Math.min(debt[i][1], cred[j][1]));
+    if (amt > 0) out.push({ from: debt[i][0], to: cred[j][0], amount: amt });
+    debt[i][1] = round2(debt[i][1] - amt); cred[j][1] = round2(cred[j][1] - amt);
+    if (debt[i][1] <= .004) i++;
+    if (cred[j][1] <= .004) j++;
+  }
+  return out;
+}
+/* keeper reimburses each co-owner their share of the agreed value */
+function buyout(item, keeperId, value = item.price) {
+  const out = [];
+  for (const [rid, paid] of Object.entries(item.splits)) {
+    if (rid === keeperId || !(paid > 0)) continue;
+    out.push({ from: keeperId, to: rid, amount: round2(value * paid / item.price), item: item.id, itemName: item.name });
+  }
+  return out;
+}
+function houseTransfers() { return settleUp(netsFrom(house.bills, house.buyouts)); }
+function stakes(items = house.items) {
+  const s = Object.fromEntries(ALL.map(id => [id, 0]));
+  for (const it of items) for (const [id, v] of Object.entries(it.splits)) s[id] += v;
+  return s;
+}
+function suggestedValue(item, rate = .2) {
+  const years = Math.max(0, (Date.now() - new Date(item.date + 'T12:00:00')) / (365.25 * 864e5));
+  const v = item.price * Math.max(.2, 1 - rate * Math.max(years, .25));
+  return { value: Math.round(v), years };
+}
+function confirmMoveOut(item, keeperId, value) {
+  const t = buyout(item, keeperId, value);
+  house.buyouts.push(...t);
+  house.items = house.items.filter(i => i.id !== item.id);
+  (house.keptBy[keeperId] ||= []).push({ ...item, value });
+  house.changed();
+  return t;
+}
+
+/* =====================================================================
+   Mocked AI. Nothing here calls AWS. The comments mark the seams.
+   ===================================================================== */
+
+/* SEAM 1 - photo classification (Claude Haiku on Amazon Bedrock).
+   Production: browser uploads the photo to S3 via a presigned URL, then
+   POST /api/classify {s3Key} -> Lambda -> AnthropicBedrockMantle
+   messages.create({ model: 'anthropic.claude-haiku-5-5', image block +
+   output_config.format json_schema { category: enum[couch,tv,coffee_table,chair],
+   confidence, suggestedName } }). The enum keeps answers inside the
+   supported set; the UI always lets the roommate override it. */
+async function mockClassify(src = {}) {
+  await sleep(1300 + Math.random() * 500);
+  let guess, conf, name;
+  if (src.sample) ({ guess, conf, name } = src.sample);
+  else {
+    const n = (src.fileName || '').toLowerCase();
+    guess = /(sofa|couch|sectional|loveseat)/.test(n) ? 'couch' : /(tv|television|monitor|screen)/.test(n) ? 'tv'
+      : /(coffee|table)/.test(n) ? 'coffee_table' : /(chair|stool|seat|armchair)/.test(n) ? 'chair' : null;
+    conf = guess ? .91 : .64;
+    guess ||= CATEGORIES[hashStr(n || String(Math.random())) % 4].id;
+    name = '';
+  }
+  const truth = src.sample?.truth;
+  const rest = CATEGORIES.filter(c => c.id !== guess).sort((a, b) => (b.id === truth) - (a.id === truth));
+  let left = round2(1 - conf);
+  const ranked = [{ id: guess, p: conf }];
+  rest.forEach((c, i) => {
+    const p = i === rest.length - 1 ? left : round2(left * (i === 0 ? .82 : .6));
+    left = round2(left - p);
+    ranked.push({ id: c.id, p: Math.max(0, p) });
+  });
+  return { category: guess, confidence: conf, ranked, suggestedName: name, model: 'anthropic.claude-haiku-5-5 (mocked)' };
+}
+
+/* SEAM 2 - house mediator chat (Claude Sonnet on Amazon Bedrock).
+   Production: POST /api/chat (SSE) -> Lambda response streaming ->
+   AnthropicBedrockMantle messages.stream({ model: 'anthropic.claude-sonnet-5-5',
+   system: mediator persona + houseContext(), messages }). Tokens are
+   relayed to the panel as they arrive; houseContext() is the grounding. */
+function houseContext() {
+  return {
+    roommates: ROOMMATES.map(r => r.name),
+    items: house.items.map(i => ({ name: i.name, category: i.category, price: i.price, splits: i.splits })),
+    bills: house.bills.map(b => ({ name: b.name, amount: b.amount, paidBy: b.paidBy, among: b.among })),
+    owed: houseTransfers(),
+  };
+}
+function mockChatReply(text) {
+  const t = text.toLowerCase();
+  const xf = houseTransfers();
+  const xfLine = xf.length ? xf.map(x => `${RM[x.from].name} → ${RM[x.to].name} ${money2(x.amount)}`).join(', ') : 'everyone is square right now';
+  const items = house.items;
+  if (/(owe|bill|pay|money|rent|split|balance)/.test(t))
+    return `Here's where the ledger stands: **${xfLine}**.\n\nRent is split evenly three ways, and the Costco run only between Alex and Maya since Jordan opted out. If anyone thinks a split is unfair, propose a change in the Bills tab so the others can see it before you talk it through.`;
+  if (/(dish|clean|chore|mess|trash|bathroom)/.test(t))
+    return `Chore fights are usually about **visibility**, not effort. Try a weekly rotation everyone can see:\n\n• Week A: Alex dishes, Maya bathroom, Jordan trash + floors\n• Week B: rotate one step\n\nAgree on what "done" means (sink empty by 10pm?) and do a two-minute check-in on Sundays. Want me to draft it as a house note?`;
+  if (/(noise|loud|quiet|music|party|sleep)/.test(t))
+    return `A simple fix is **shared quiet hours**: 11pm–7am on weeknights, with a heads-up in the group chat 24h before anything later on weekends. Headphones by default after 11. If someone keeps an early schedule, ask them to say which nights matter most and protect those first.`;
+  if (/(guest|partner|boyfriend|girlfriend|overnight|stay)/.test(t))
+    return `Most roommate guest policies that work have two numbers: **how many nights a week** a guest can stay without asking (2 is common), and **when a guest starts paying** (for example 10+ nights a month means chipping in about a quarter of utilities). Agree on both now, while nobody's mid-situation.`;
+  if (/(food|fridge|grocer|ate|snack)/.test(t))
+    return `Split the fridge into **personal shelves plus one shared shelf**. Shared staples (oil, eggs, coffee, paper towels) go on a list in the Bills tab and get split evenly. Anything on a personal shelf is off-limits unless asked, and a "replace it within 48h" rule covers accidents.`;
+  if (/(thermostat|ac|heat|temperature|cold|hot)/.test(t))
+    return `Pick a **default band** (68–72°F) and agree that going outside it needs a quick check with whoever is home. If one person runs space heaters a lot, you can weight the electric bill (for example 40/30/30) rather than arguing about it every month.`;
+  if (/(couch|tv|chair|table|furniture|move.?out|keep|buyout)/.test(t)) {
+    const it = items[0];
+    const ex = it ? `For example, if Maya keeps the ${it.name} at its full ${money(it.price)} value, she pays back each person what they put in. ` : '';
+    return `At move-out, whoever keeps an item **buys out everyone else's share**. ${ex}A fair value is usually the purchase price minus about 20% a year for normal wear. Agree on the value before you pick who keeps it, so the decision doesn't feel personal.`;
+  }
+  return `I can help with that. A pattern that works for most house disagreements:\n\n1. Each person says what they need, not what the other did wrong.\n2. Restate the other side until they agree you got it.\n3. Propose one small rule and try it for two weeks.\n\nTell me a bit more (who's involved, how often it happens) and I'll suggest something specific to your place.`;
+}
+async function streamText(el, text, onTick) {
+  const parts = text.split(/(\s+)/);
+  let acc = '';
+  for (let i = 0; i < parts.length; i++) {
+    acc += parts[i];
+    el.innerHTML = esc(acc).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*\*[^*]*$/, m => m.replace('**', ''));
+    if (i % 2 === 0) { onTick?.(); await sleep(14 + Math.random() * 26); }
+  }
+}
+const CHAT_SUGGESTIONS = ['Who owes who right now?', 'Maya never does the dishes', 'Draft a guest policy', 'How do we decide who keeps the couch?'];
+
+/* =====================================================================
+   Sample photos - painted on a canvas so the demo works without a camera.
+   ===================================================================== */
+const photoCache = {};
+function rrect(g, x, y, w, h2, r, fill) { g.beginPath(); g.roundRect(x, y, w, h2, r); g.fillStyle = fill; g.fill(); }
+function samplePhoto(kind) {
+  if (photoCache[kind]) return photoCache[kind];
+  const c = document.createElement('canvas'); c.width = 480; c.height = 360;
+  const g = c.getContext('2d');
+  let gr = g.createLinearGradient(0, 0, 0, 250); gr.addColorStop(0, '#efe6dd'); gr.addColorStop(1, '#e0d0c1');
+  g.fillStyle = gr; g.fillRect(0, 0, 480, 250);
+  g.fillStyle = 'rgba(255,238,212,.6)'; g.beginPath(); g.moveTo(330, 0); g.lineTo(470, 0); g.lineTo(430, 250); g.lineTo(290, 250); g.fill();
+  gr = g.createLinearGradient(0, 250, 0, 360); gr.addColorStop(0, '#b88459'); gr.addColorStop(1, '#94633f');
+  g.fillStyle = gr; g.fillRect(0, 250, 480, 110);
+  g.strokeStyle = 'rgba(60,30,10,.18)'; g.lineWidth = 1;
+  for (let y = 262, k = 12; y < 360; y += k, k += 3) { g.beginPath(); g.moveTo(0, y); g.lineTo(480, y); g.stroke(); }
+  g.fillStyle = '#f4efe9'; g.fillRect(0, 243, 480, 9);
+  g.fillStyle = 'rgba(40,20,10,.28)'; g.beginPath(); g.ellipse(240, 296, 175, 20, 0, 0, Math.PI * 2); g.fill();
+  const W = '#f5f2ee', W2 = '#e8e2db', W3 = '#d8d0c7', D = '#2f3036', WD = '#a8764d';
+  if (kind === 'couch') {
+    rrect(g, 98, 118, 284, 92, 18, W2); rrect(g, 110, 128, 128, 72, 16, W); rrect(g, 242, 128, 128, 72, 16, W);
+    rrect(g, 72, 200, 336, 78, 14, W3); rrect(g, 104, 186, 134, 40, 12, W); rrect(g, 242, 186, 134, 40, 12, W);
+    rrect(g, 58, 158, 56, 124, 20, W2); rrect(g, 366, 158, 56, 124, 20, W2);
+    g.fillStyle = D; g.fillRect(84, 280, 8, 14); g.fillRect(388, 280, 8, 14);
+  } else if (kind === 'tv') {
+    rrect(g, 110, 228, 260, 56, 6, W2); g.fillStyle = W3; g.fillRect(238, 234, 3, 44);
+    g.fillStyle = WD; g.fillRect(124, 284, 6, 12); g.fillRect(350, 284, 6, 12);
+    rrect(g, 128, 82, 224, 132, 6, D);
+    gr = g.createLinearGradient(140, 92, 340, 204); gr.addColorStop(0, '#46526a'); gr.addColorStop(1, '#22262f');
+    rrect(g, 136, 90, 208, 116, 3, gr);
+    g.fillStyle = 'rgba(255,255,255,.08)'; g.beginPath(); g.moveTo(136, 90); g.lineTo(230, 90); g.lineTo(160, 206); g.lineTo(136, 206); g.fill();
+    g.fillStyle = D; g.fillRect(232, 214, 16, 14);
+  } else if (kind === 'coffee_table') {
+    g.fillStyle = WD; g.save(); g.translate(130, 232); g.rotate(.12); g.fillRect(0, 0, 9, 62); g.restore();
+    g.save(); g.translate(344, 233); g.rotate(-.12); g.fillRect(0, 0, 9, 62); g.restore();
+    rrect(g, 98, 214, 284, 22, 10, '#c99a6c'); rrect(g, 106, 206, 268, 14, 7, '#dcb48b');
+    rrect(g, 150, 190, 70, 10, 2, '#8fb3a3'); rrect(g, 156, 181, 60, 9, 2, '#e3a07c');
+    rrect(g, 300, 168, 22, 40, 10, W);
+  } else if (kind === 'rug') {
+    g.fillStyle = 'rgba(40,20,10,.18)'; g.beginPath(); g.moveTo(70, 270); g.lineTo(410, 270); g.lineTo(470, 352); g.lineTo(10, 352); g.fill();
+    g.fillStyle = '#e8dccb'; g.beginPath(); g.moveTo(80, 262); g.lineTo(400, 262); g.lineTo(460, 344); g.lineTo(20, 344); g.fill();
+    g.fillStyle = '#c99f7a'; g.beginPath(); g.moveTo(112, 270); g.lineTo(368, 270); g.lineTo(412, 334); g.lineTo(68, 334); g.fill();
+    g.fillStyle = '#e8dccb'; g.beginPath(); g.moveTo(140, 278); g.lineTo(340, 278); g.lineTo(372, 324); g.lineTo(108, 324); g.fill();
+    g.strokeStyle = '#b5845e'; g.lineWidth = 3; g.beginPath(); g.moveTo(240, 282); g.lineTo(240, 320); g.moveTo(170, 301); g.lineTo(310, 301); g.stroke();
+  } else if (kind === 'lamp') {
+    gr = g.createRadialGradient(240, 110, 10, 240, 110, 150); gr.addColorStop(0, 'rgba(255,226,170,.75)'); gr.addColorStop(1, 'rgba(255,226,170,0)');
+    g.fillStyle = gr; g.fillRect(80, 0, 320, 260);
+    g.fillStyle = D; g.fillRect(236, 120, 7, 172); rrect(g, 205, 284, 70, 12, 6, D);
+    g.fillStyle = W; g.beginPath(); g.moveTo(205, 70); g.lineTo(275, 70); g.lineTo(295, 128); g.lineTo(185, 128); g.fill();
+    g.fillStyle = 'rgba(255,215,150,.9)'; g.fillRect(190, 124, 100, 5);
+  } else if (kind === 'bookshelf') {
+    rrect(g, 150, 70, 180, 222, 4, W2);
+    const books = ['#8fb3a3', '#e3a07c', '#9a9ccf', '#d9c08a', '#c97a62', '#6f8fa8'];
+    for (let r = 0; r < 4; r++) {
+      const y = 76 + r * 54; g.fillStyle = W; g.fillRect(156, y, 168, 46);
+      for (let k = 0, x = 160; k < 6 && x < 300; k++) { const bw = 10 + ((r * 7 + k * 5) % 9); g.fillStyle = books[(r + k) % books.length]; g.fillRect(x, y + 10 + (k % 3) * 3, bw, 36 - (k % 3) * 3); x += bw + 3; }
+      g.fillStyle = W3; g.fillRect(150, y + 46, 180, 6);
+    }
+    rrect(g, 290, 48, 26, 24, 6, W); g.fillStyle = '#86a888'; g.beginPath(); g.arc(303, 40, 16, 0, Math.PI * 2); g.fill();
+  } else if (kind === 'console') {
+    /* a standing console and a big controller are the subject; no furniture in frame */
+    rrect(g, 150, 70, 52, 220, 22, '#fbfaf8'); rrect(g, 202, 76, 26, 208, 8, D); rrect(g, 228, 70, 52, 220, 22, '#fbfaf8');
+    g.fillStyle = '#5b8fd8'; g.fillRect(208, 96, 14, 3);
+    g.fillStyle = D; g.beginPath(); g.ellipse(352, 262, 62, 28, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(306, 282, 22, 20, 0, 0, Math.PI * 2); g.ellipse(398, 282, 22, 20, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#4a4b52'; for (const [x, y] of [[326, 258], [378, 258], [352, 270]]) { g.beginPath(); g.arc(x, y, 7, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#d9d2ca'; for (const [x, y] of [[392, 246], [404, 256], [380, 256], [392, 266]]) { g.beginPath(); g.arc(x, y, 3.5, 0, Math.PI * 2); g.fill(); }
+  } else if (kind === 'fridge') {
+    rrect(g, 172, 118, 136, 172, 10, '#f6f4f1'); g.fillStyle = W3; g.fillRect(172, 156, 136, 3); g.fillRect(176, 290, 128, 4);
+    rrect(g, 286, 170, 8, 60, 4, D); rrect(g, 286, 128, 8, 20, 4, D);
+    rrect(g, 196, 92, 20, 28, 4, '#c94f3d'); rrect(g, 224, 96, 20, 24, 4, '#6f8fa8');
+  } else if (kind === 'speaker') {
+    rrect(g, 120, 236, 240, 46, 6, W2); g.fillStyle = WD; g.fillRect(132, 282, 6, 12); g.fillRect(342, 282, 6, 12);
+    rrect(g, 150, 160, 180, 46, 10, D); g.fillStyle = '#4a4b52'; for (let x = 170; x < 316; x += 22) { g.beginPath(); g.arc(x, 183, 6, 0, Math.PI * 2); g.fill(); }
+    rrect(g, 360, 96, 74, 196, 10, D); g.fillStyle = '#4a4b52';
+    g.beginPath(); g.arc(397, 132, 14, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(397, 214, 26, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#2a2b30'; g.beginPath(); g.arc(397, 214, 10, 0, Math.PI * 2); g.fill();
+  } else if (kind === 'armchair') {
+    rrect(g, 166, 108, 148, 118, 28, W2); rrect(g, 148, 206, 184, 74, 16, W3);
+    rrect(g, 178, 192, 124, 40, 14, W); rrect(g, 134, 160, 48, 120, 20, W2); rrect(g, 298, 160, 48, 120, 20, W2);
+    g.fillStyle = WD; g.fillRect(160, 280, 7, 16); g.fillRect(314, 280, 7, 16);
+  } else {
+    rrect(g, 192, 112, 96, 92, 10, W2); rrect(g, 178, 206, 124, 22, 6, W);
+    g.strokeStyle = WD; g.lineWidth = 7; g.beginPath(); g.moveTo(190, 226); g.lineTo(180, 296); g.moveTo(290, 226); g.lineTo(300, 296); g.stroke();
+  }
+  const img = g.getImageData(0, 0, 480, 360), d = img.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - .5) * 12; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+  g.putImageData(img, 0, 0);
+  gr = g.createRadialGradient(240, 180, 120, 240, 180, 320); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(60,30,10,.28)');
+  g.fillStyle = gr; g.fillRect(0, 0, 480, 360);
+  return (photoCache[kind] = c.toDataURL('image/jpeg', .86));
+}
+async function fileToDataURL(file, max = 640) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const k = Math.min(1, max / Math.max(img.width, img.height));
+    const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', .85);
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/* =====================================================================
+   Shared DOM components
+   ===================================================================== */
+function toast(msg, ms = 2600) {
+  let wrap = document.querySelector('.rr-toast-wrap');
+  if (!wrap) { wrap = h('<div class="rr-toast-wrap"></div>'); document.body.append(wrap); }
+  const t = h(`<div class="rr-toast">${msg}</div>`);
+  wrap.append(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, ms);
+}
+
+function categoryPicker(root, result, onPick) {
+  const pOf = id => result?.ranked?.find(r => r.id === id)?.p;
+  root.innerHTML = `<div class="rr-cats">${CATEGORIES.map(c => {
+    const p = pOf(c.id);
+    return `<button type="button" class="rr-cat" data-cat="${c.id}">${p != null ? `<span class="p">${Math.round(p * 100)}%</span>` : ''}${icon(c.id, 26, 1.6)}${c.label}</button>`;
+  }).join('')}</div>`;
+  const set = id => { root.querySelectorAll('.rr-cat').forEach(b => b.classList.toggle('on', b.dataset.cat === id)); };
+  root.querySelectorAll('.rr-cat').forEach(b => b.onclick = () => { set(b.dataset.cat); onPick(b.dataset.cat); });
+  set(result?.category);
+  return { set };
+}
+
+function photoInput(root, { onFile, onSample, compact = false } = {}) {
+  root.innerHTML = `
+    <label class="rr-drop"${compact ? ' style="padding:18px 12px"' : ''}>
+      <input type="file" accept="image/*" capture="environment">
+      <span class="ic">${icon('camera', 26)}</span>
+      <b>Take or upload a photo</b>
+      <span class="rr-muted rr-small">Opens the camera on a phone · drop an image here on desktop</span>
+    </label>
+    <div class="rr-muted rr-small" style="margin:12px 2px 8px;font-weight:650">No photo handy? Try a sample:</div>
+    <div class="rr-samples">${SAMPLES.map(s => `<button type="button" class="rr-sample" data-k="${s.key}"><img alt="" src="${samplePhoto(s.draw)}"><span>${s.file}</span></button>`).join('')}</div>`;
+  const drop = root.querySelector('.rr-drop'), inp = drop.querySelector('input');
+  const take = async f => { if (f && f.type.startsWith('image/')) onFile(await fileToDataURL(f), f.name); };
+  inp.onchange = () => take(inp.files[0]);
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); take(e.dataTransfer.files[0]); };
+  root.querySelectorAll('.rr-sample').forEach(b => b.onclick = () => { const s = SAMPLES.find(x => x.key === b.dataset.k); onSample(samplePhoto(s.draw), s); });
+}
+
+function detailsForm(root, init = {}) {
+  const st = { mode: 'even', among: new Set(ALL), custom: {} };
+  root.innerHTML = `
+    <div class="rr-stack">
+      <label class="rr-field"><span>Item name</span><input class="rr-input" data-k="name" placeholder="e.g. Grey sofa" value="${esc(init.name || '')}"></label>
+      <div class="rr-grid2">
+        <label class="rr-field"><span>Price</span><div class="rr-money"><b>$</b><input class="rr-input" data-k="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" value="${init.price ?? ''}"></div></label>
+        <label class="rr-field"><span>Purchase date</span><input class="rr-input" data-k="date" type="date" value="${init.date || today()}"></label>
+      </div>
+      <div class="rr-field"><span style="display:flex;justify-content:space-between;align-items:center">Who chipped in
+        <span class="rr-seg"><button type="button" data-mode="even" class="on">Evenly</button><button type="button" data-mode="custom">Custom</button></span></span>
+        <div class="rr-splits"></div>
+        <div class="rr-split-sum"></div>
+      </div>
+    </div>`;
+  const q = k => root.querySelector(`[data-k="${k}"]`);
+  const price = () => Math.max(0, +q('price').value || 0);
+  const splitsEl = root.querySelector('.rr-splits'), sumEl = root.querySelector('.rr-split-sum');
+  const amounts = () => {
+    if (st.mode === 'even') return st.among.size ? equalSplit(price(), [...st.among]) : {};
+    return Object.fromEntries([...st.among].map(id => [id, +st.custom[id] || 0]));
+  };
+  const listeners = new Set();
+  const paint = () => {
+    const a = amounts(), p = price();
+    splitsEl.innerHTML = ROOMMATES.map(r => {
+      const on = st.among.has(r.id), v = a[r.id] ?? 0;
+      return `<div class="rr-split-row ${on ? '' : 'off'}">
+        <label class="who"><input type="checkbox" data-in="${r.id}" ${on ? 'checked' : ''}>${av(r.id, 26)}<span>${r.name}${r.you ? ' (you)' : ''}</span></label>
+        <span></span>
+        <div class="rr-money"><b>$</b><input class="rr-input" data-amt="${r.id}" type="number" step="0.01" min="0" value="${on ? v : ''}" ${st.mode === 'even' || !on ? 'readonly' : ''}></div>
+        <span class="pct">${p && on ? Math.round(v / p * 100) + '%' : '—'}</span></div>`;
+    }).join('');
+    const s = sumVals(a);
+    const ok = p > 0 && Math.abs(s - p) < .01;
+    sumEl.className = 'rr-split-sum ' + (ok ? 'ok' : 'bad');
+    sumEl.textContent = !p ? 'Enter a price to see the split' : ok ? `✓ ${money2(s)} split ${st.among.size} way${st.among.size === 1 ? '' : 's'}` : `${money2(round2(p - s))} still to assign`;
+    splitsEl.querySelectorAll('[data-in]').forEach(cb => cb.onchange = () => {
+      cb.checked ? st.among.add(cb.dataset.in) : st.among.delete(cb.dataset.in); paint(); fire();
+    });
+    splitsEl.querySelectorAll('[data-amt]').forEach(inp => inp.oninput = () => {
+      st.custom[inp.dataset.amt] = +inp.value || 0;
+      const s2 = sumVals(amounts()), ok2 = p > 0 && Math.abs(s2 - p) < .01;
+      sumEl.className = 'rr-split-sum ' + (ok2 ? 'ok' : 'bad');
+      sumEl.textContent = ok2 ? `✓ ${money2(s2)} custom split` : `${money2(round2(p - s2))} still to assign`;
+      const pctEl = inp.closest('.rr-split-row').querySelector('.pct'); pctEl.textContent = p ? Math.round((+inp.value || 0) / p * 100) + '%' : '—';
+      fire();
+    });
+  };
+  const fire = () => listeners.forEach(f => f());
+  root.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
+    if (b.dataset.mode === 'custom' && st.mode === 'even') st.custom = amounts();
+    st.mode = b.dataset.mode;
+    root.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('on', x === b));
+    paint(); fire();
+  });
+  q('price').oninput = () => { if (st.mode === 'custom') st.custom = equalSplit(price(), [...st.among]); paint(); fire(); };
+  q('name').oninput = fire;
+  paint();
+  return {
+    onChange(fn) { listeners.add(fn); },
+    setName(n) { if (!q('name').value) { q('name').value = n; fire(); } },
+    read() {
+      const name = q('name').value.trim(), p = price(), a = amounts();
+      const splits = Object.fromEntries(Object.entries(a).filter(([, v]) => v > 0));
+      if (!name) return { error: 'Give it a name' };
+      if (!p) return { error: 'Add a price' };
+      if (Math.abs(sumVals(splits) - p) >= .01) return { error: 'Splits need to add up to the price' };
+      return { value: { name, price: p, date: q('date').value || today(), splits } };
+    },
+  };
+}
+
+function billIcon(kind) { return icon({ rent: 'rent', utility: 'utility', wifi: 'wifi', groceries: 'groceries', payment: 'payment', buyout: 'key' }[kind] || 'receipt', 18); }
+
+function mountBills(root) {
+  let adding = false;
+  root.innerHTML = `<div class="rr-panel">
+    <div class="rr-panel-head"><div><h3>Bills & splits</h3><p>Apt 4B · October · ${av('alex', 18)}${av('maya', 18)}${av('jordan', 18)}</p></div>
+      <button class="rr-btn sm" data-act="add">${icon('plus', 16)}Bill</button></div>
+    <div class="rr-panel-body"></div></div>`;
+  const body = root.querySelector('.rr-panel-body');
+  root.querySelector('[data-act="add"]').onclick = () => { adding = !adding; paint(); };
+  const paint = () => {
+    const xf = houseTransfers();
+    const mine = netsFrom(house.bills, house.buyouts)[ME];
+    const st = stakes(), stTotal = sumVals(st) || 1;
+    body.innerHTML = `
+      ${adding ? `<form class="rr-addbill">
+        <label class="rr-field"><span>What for?</span><input class="rr-input" name="n" placeholder="e.g. Water bill" required></label>
+        <div class="rr-grid2">
+          <label class="rr-field"><span>Amount</span><div class="rr-money"><b>$</b><input class="rr-input" name="a" type="number" min="0.01" step="0.01" required></div></label>
+          <label class="rr-field"><span>Paid by</span><select class="rr-input" name="p">${ROOMMATES.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}</select></label>
+        </div>
+        <div class="rr-field"><span>Split evenly between</span><div class="rr-who-pick">${ROOMMATES.map(r => `<label><input type="checkbox" name="w" value="${r.id}" checked>${av(r.id, 22)}${r.name}</label>`).join('')}</div></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="rr-btn ghost sm" data-act="cancel">Cancel</button><button class="rr-btn sm">Add bill</button></div>
+      </form>` : ''}
+      <div class="rr-bal">
+        <div class="rr-muted rr-small" style="font-weight:700;text-transform:uppercase;letter-spacing:.07em">Your balance</div>
+        <div class="big ${mine >= 0 ? 'pos' : 'neg'}">${mine >= 0 ? "You're owed " + money2(mine) : 'You owe ' + money2(-mine)}</div>
+        ${xf.length ? xf.map((x, i) => `<div class="rr-xfer">${av(x.from, 24)}<span class="who">${nameOf(x.from)} → ${nameOf(x.to)}</span><span class="amt">${money2(x.amount)}</span><button class="rr-btn soft" data-pay="${i}">Mark paid</button></div>`).join('') : '<div class="rr-pill good">Everyone is square 🎉</div>'}
+      </div>
+      ${house.buyouts.length ? `<div class="rr-sec">Move-out buyouts</div><ul class="rr-bills">${house.buyouts.map(b => `<li class="rr-bill"><span class="ic">${billIcon('buyout')}</span><div style="min-width:0"><div class="t">${esc(b.itemName)}</div><div class="s">${RM[b.from].name} keeps it · pays ${RM[b.to].name}</div></div><div class="a">${money2(b.amount)}</div></li>`).join('')}</ul>` : ''}
+      <div class="rr-sec">Recent bills</div>
+      <ul class="rr-bills">${house.bills.slice().reverse().map(b => `<li class="rr-bill"><span class="ic">${billIcon(b.kind)}</span><div style="min-width:0"><div class="t">${esc(b.name)}</div><div class="s">${b.kind === 'payment' ? `${RM[b.paidBy].name} paid ${RM[b.among[0]].name}` : `${RM[b.paidBy].name} paid · ${b.among.length === 3 ? 'split 3 ways' : 'split ' + b.among.map(i => RM[i].name).join(' & ')}`} · ${fmtDate(b.date)}</div></div><div class="a">${money2(b.amount)}<small>${b.kind === 'payment' ? 'settled' : money2(b.amount / b.among.length) + ' each'}</small></div></li>`).join('')}</ul>
+      <div class="rr-sec">Shared furniture</div>
+      ${house.items.length ? `<div class="rr-stake">${ROOMMATES.map(r => `<div class="rr-stake-row"><span>${r.name}</span><span class="bar"><i style="width:${st[r.id] / stTotal * 100}%;background:${r.color}"></i></span><span class="v">${money(round2(st[r.id]))}</span></div>`).join('')}<div class="rr-muted rr-small">${house.items.length} item${house.items.length === 1 ? '' : 's'} in the room · ${money(round2(sumVals(st)))} total</div></div>` : '<div class="rr-empty-note">Nothing shared in the room right now.</div>'}`;
+    body.querySelectorAll('[data-pay]').forEach(b => b.onclick = () => {
+      const x = xf[+b.dataset.pay];
+      house.bills.push({ id: uid('pay'), name: `${RM[x.from].name} paid ${RM[x.to].name}`, amount: x.amount, paidBy: x.from, among: [x.to], date: today(), kind: 'payment' });
+      toast(`${icon('check', 16)} Recorded ${money2(x.amount)} from ${RM[x.from].name} to ${RM[x.to].name}`);
+      house.changed();
+    });
+    const f = body.querySelector('form');
+    if (f) {
+      f.querySelector('[data-act="cancel"]').onclick = () => { adding = false; paint(); };
+      f.onsubmit = e => {
+        e.preventDefault();
+        const fd = new FormData(f), among = fd.getAll('w');
+        if (!among.length) return toast('Pick at least one person to split with');
+        house.bills.push({ id: uid('b'), name: fd.get('n'), amount: round2(+fd.get('a')), paidBy: fd.get('p'), among, date: today(), kind: /water|gas|electric|power/i.test(fd.get('n')) ? 'utility' : 'receipt' });
+        adding = false; toast(`${icon('check', 16)} Bill added and split`); house.changed();
+      };
+      f.querySelector('input').focus();
+    }
+  };
+  house.on(paint);
+  paint();
+  return { paint };
+}
+
+function mountChat(root, opts = {}) {
+  const o = {
+    name: 'Roomie', sub: 'House mediator', suggestions: CHAT_SUGGESTIONS, reply: mockChatReply,
+    placeholder: 'Ask about a dispute, a bill, house rules…',
+    pill: 'Claude Sonnet · mocked',
+    foot: "Mock replies. In production this streams from Bedrock with your house's bills and items as context.",
+    greet: `Hi Alex 👋 I know your house's bills and shared stuff. Ask me to settle a disagreement, explain who owes what, or draft house rules.`,
+    ...opts,
+  };
+  root.innerHTML = `<div class="rr-panel">
+    <div class="rr-panel-head"><div><h3>${esc(o.name)}</h3><p>${esc(o.sub)} <span class="rr-pill ai" data-chat-pill>${icon('spark', 12)}${esc(o.pill)}</span></p></div></div>
+    <div class="rr-panel-body"><div class="rr-chatlog"></div></div>
+    <div class="rr-suggest">${o.suggestions.map(s => `<button type="button" class="rr-chip">${esc(s)}</button>`).join('')}</div>
+    <form class="rr-chatbar"><input class="rr-input" placeholder="${esc(o.placeholder)}"><button class="rr-btn" aria-label="Send">${icon('send', 18)}</button></form>
+    <div class="rr-ai-foot" data-chat-foot>${esc(o.foot)}</div></div>`;
+  const log = root.querySelector('.rr-chatlog'), body = root.querySelector('.rr-panel-body');
+  const form = root.querySelector('form'), inp = form.querySelector('input');
+  const scroll = () => { body.scrollTop = body.scrollHeight; };
+  const add = (cls, html) => { const m = h(`<div class="rr-msg ${cls}">${html}</div>`); log.append(m); scroll(); return m; };
+  let busy = false;
+  const ask = async text => {
+    if (busy || !text.trim()) return;
+    busy = true; add('me', esc(text)); inp.value = '';
+    const m = add('ai', `<span class="rr-thinking"><span class="rr-dots"><i></i><i></i><i></i></span></span>`);
+    if (o.stream) {
+      /* live model: render deltas as they arrive; on failure show why, and offer the offline answer */
+      let acc = '';
+      const paint = () => { m.innerHTML = esc(acc).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*\*[^*]*$/, s => s.replace('**', '')); scroll(); };
+      try { await o.stream(text, d => { acc += d; paint(); }); if (!acc.trim()) { acc = '(no answer)'; paint(); } }
+      catch (e) {
+        m.classList.add('err');
+        m.innerHTML = `<b>${esc(e.title || "Couldn't reach Claude")}</b>\n${esc(e.message)}${o.reply ? '\n<button type="button" class="rr-chip" data-offline>Answer offline instead</button>' : ''}`;
+        const b = m.querySelector('[data-offline]');
+        if (b) b.onclick = async () => { m.classList.remove('err'); await streamText(m, o.reply(text), scroll); };
+        scroll();
+      }
+    } else {
+      await sleep(700 + Math.random() * 500);
+      await streamText(m, o.reply(text), scroll);
+    }
+    busy = false;
+  };
+  add('ai', esc(o.greet));
+  form.onsubmit = e => { e.preventDefault(); ask(inp.value); };
+  root.querySelectorAll('.rr-chip').forEach(c => c.onclick = () => ask(c.textContent));
+  return { ask };
+}
+
+function openArch({ title, sub, bullets }) {
+  const back = h(`<div class="rr-arch-back"><div class="rr-arch" role="dialog" aria-label="Architecture note">
+    <button class="rr-btn ghost sm close">${icon('close', 14)}Close</button>
+    <h2>${title}</h2><p class="sub">${sub}</p>
+    <svg viewBox="0 0 760 250" role="img" aria-label="Architecture diagram" style="color:var(--ink)">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="currentColor" opacity=".55"/></marker></defs>
+      <g font-family="inherit" font-size="13" font-weight="700" fill="currentColor">
+        <g id="n-client"><title>Browser client</title><rect x="10" y="80" width="170" height="90" rx="16" fill="#fff" stroke="rgba(58,46,40,.25)"/><text x="95" y="113" text-anchor="middle">Browser</text><text x="95" y="133" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">three.js room + panels</text><text x="95" y="150" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">Cognito session</text></g>
+        <g id="n-api"><title>API layer</title><rect x="250" y="80" width="170" height="90" rx="16" fill="#fff7f0" stroke="rgba(214,120,77,.6)"/><text x="335" y="113" text-anchor="middle">API Gateway + Lambda</text><text x="335" y="133" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">/classify  /chat (SSE)</text><text x="335" y="150" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">/items  /bills  /moveout</text></g>
+        <g id="n-haiku"><title>Claude Haiku on Bedrock</title><rect x="500" y="14" width="250" height="64" rx="16" fill="#efe9fb" stroke="rgba(93,79,168,.45)"/><text x="625" y="41" text-anchor="middle">Bedrock · Claude Haiku</text><text x="625" y="60" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".75">photo → {category, confidence}</text></g>
+        <g id="n-sonnet"><title>Claude Sonnet on Bedrock</title><rect x="500" y="94" width="250" height="64" rx="16" fill="#efe9fb" stroke="rgba(93,79,168,.45)"/><text x="625" y="121" text-anchor="middle">Bedrock · Claude Sonnet</text><text x="625" y="140" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".75">streamed mediator chat</text></g>
+        <g id="n-data"><title>Data stores</title><rect x="500" y="174" width="250" height="64" rx="16" fill="#fff" stroke="rgba(58,46,40,.25)"/><text x="625" y="201" text-anchor="middle">S3 photos · DynamoDB ledger</text><text x="625" y="220" text-anchor="middle" font-weight="500" font-size="11.5" opacity=".7">items, splits, bills, buyouts</text></g>
+      </g>
+      <g stroke="currentColor" stroke-opacity=".45" stroke-width="2" fill="none" marker-end="url(#ah)">
+        <path d="M180 125 H246"/><path d="M420 110 C460 100 470 50 496 46"/><path d="M420 125 H496"/><path d="M420 140 C460 150 470 200 496 206"/>
+      </g>
+      <text x="213" y="116" font-size="11" text-anchor="middle" fill="currentColor" opacity=".6">HTTPS</text>
+    </svg>
+    <ul>${bullets.map(b => `<li>${b}</li>`).join('')}</ul></div></div>`);
+  back.onclick = e => { if (e.target === back || e.target.closest('.close')) back.remove(); };
+  document.body.append(back);
+}
+const ARCH_COMMON = [
+  '<b>Classification seam</b> (<code>mockClassify</code>): photo goes to S3 by presigned URL; <code>/classify</code> calls <code>anthropic.claude-haiku-5-5</code> through the Bedrock Mantle Messages client with an image block and a structured-output JSON schema whose <code>category</code> is an enum of the four supported types. Adding a category means adding an enum value and a generic model.',
+  '<b>Chat seam</b> (<code>mockChatReply</code>): <code>/chat</code> streams <code>anthropic.claude-sonnet-5-5</code> over SSE. The system prompt is the mediator persona plus <code>houseContext()</code> (roommates, bills, items, who owes whom), so answers cite real numbers.',
+  'No AWS credentials ever reach the browser: Lambda holds the Bedrock IAM role, and the client only gets a Cognito token.',
+];
+
+/* =====================================================================
+   three.js: tweens, renderer, room, lights, generic furniture models
+   ===================================================================== */
+const Ease = {
+  inOut: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  out: k => 1 - Math.pow(1 - k, 3),
+  in: k => k * k * k,
+  outBack: k => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
+  outBounce: k => { const n = 7.5625, d = 2.75; if (k < 1 / d) return n * k * k; if (k < 2 / d) return n * (k -= 1.5 / d) * k + .75; if (k < 2.5 / d) return n * (k -= 2.25 / d) * k + .9375; return n * (k -= 2.625 / d) * k + .984375; },
+  linear: k => k,
+};
+const tweens = new Set();
+function tween(ms, fn, ease = Ease.inOut) {
+  return new Promise(res => { tweens.add({ t0: performance.now(), ms, fn, ease, res }); });
+}
+function tickTweens(now) {
+  for (const t of tweens) {
+    const k = Math.min(1, Math.max(0, (now - t.t0) / t.ms));
+    t.fn(t.ease(k), k);
+    if (k >= 1) { tweens.delete(t); t.res(); }
+  }
+}
+const lerp = (a, b, k) => a + (b - a) * k;
+
+function createRenderer(canvas) {
+  const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.shadowMap.enabled = true;
+  r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.outputColorSpace = THREE.SRGBColorSpace;
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.toneMappingExposure = 1.08;
+  return r;
+}
+
+function woodTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 1024;
+  const g = c.getContext('2d');
+  const tones = ['#9a6c4c', '#8f6245', '#a37452', '#8a5d41', '#966a4b', '#9f7150'];
+  const rows = 16, rowH = 1024 / rows;
+  for (let r = 0; r < rows; r++) {
+    let x = -((r * 397) % 600);
+    while (x < 1024) {
+      const w = 380 + ((r * 131 + x) % 260);
+      g.fillStyle = tones[(r * 7 + Math.abs(Math.round(x))) % tones.length];
+      g.fillRect(x, r * rowH, w, rowH);
+      for (let k = 0; k < 9; k++) {
+        g.strokeStyle = `rgba(80,40,15,${.05 + Math.random() * .07})`; g.lineWidth = 1 + Math.random() * 1.5;
+        const y = r * rowH + 6 + Math.random() * (rowH - 12);
+        g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + w * .3, y + (Math.random() - .5) * 6, x + w * .7, y + (Math.random() - .5) * 6, x + w, y); g.stroke();
+      }
+      g.fillStyle = 'rgba(60,28,10,.35)'; g.fillRect(x, r * rowH, 2, rowH);
+      x += w;
+    }
+    g.fillStyle = 'rgba(60,28,10,.32)'; g.fillRect(0, r * rowH, 1024, 2);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+function mesh(geo, mat) { const m = new THREE.Mesh(geo, mat); m.castShadow = true; m.receiveShadow = true; return m; }
+function rbox(w, hgt, d, r, mat) { return mesh(new RoundedBoxGeometry(w, hgt, d, 3, Math.min(r, w / 2 - .001, hgt / 2 - .001, d / 2 - .001)), mat); }
+const M = {
+  wall: () => new THREE.MeshStandardMaterial({ color: 0xf4efe9, roughness: .95 }),
+  white: () => new THREE.MeshStandardMaterial({ color: 0xf7f4ef, roughness: .78 }),
+  fabric: () => new THREE.MeshStandardMaterial({ color: 0xf1ebe4, roughness: .95 }),
+  dark: () => new THREE.MeshStandardMaterial({ color: 0x34343a, roughness: .45, metalness: .2 }),
+  wood: () => new THREE.MeshStandardMaterial({ color: 0xb98a62, roughness: .7 }),
+  color: hex => new THREE.MeshStandardMaterial({ color: hex, roughness: .8 }),
+};
+
+/* Room: floor x,z in [-3,3]; walls on x=-3 (left) and z=-3 (back). Viewer sits at +x,+z. */
+function buildRoom({ size = 6, wallH = 3.3 } = {}) {
+  const g = new THREE.Group(), S = size / 2;
+  const slab = rbox(size + .36, .36, size + .36, .05, M.white()); slab.position.set(-.08, -.18, -.08); g.add(slab);
+  const woodMat = new THREE.MeshStandardMaterial({ map: woodTexture(), roughness: .62 });
+  woodMat.map.repeat.set(1.15, 1.15);
+  const floor = mesh(new THREE.BoxGeometry(size, .04, size), woodMat); floor.position.y = .0; floor.castShadow = false; g.add(floor);
+  const wallMat = M.wall();
+  const left = mesh(new THREE.BoxGeometry(.24, wallH, size + .24), wallMat); left.position.set(-S - .12, wallH / 2, -.12); g.add(left);
+  const back = mesh(new THREE.BoxGeometry(size, wallH, .24), wallMat); back.position.set(0, wallH / 2, -S - .12); g.add(back);
+  const capMat = M.white();
+  const cap1 = mesh(new THREE.BoxGeometry(.26, .03, size + .26), capMat); cap1.position.set(-S - .12, wallH + .015, -.12); g.add(cap1);
+  const cap2 = mesh(new THREE.BoxGeometry(size + .02, .03, .26), capMat); cap2.position.set(0, wallH + .015, -S - .12); g.add(cap2);
+  const bbMat = M.white();
+  const bb1 = mesh(new THREE.BoxGeometry(.04, .14, size), bbMat); bb1.position.set(-S + .02, .07, 0); g.add(bb1);
+  const bb2 = mesh(new THREE.BoxGeometry(size, .14, .04), bbMat); bb2.position.set(0, .07, -S + .02); g.add(bb2);
+  // window + curtains on the left wall (echoes the reference image)
+  const win = new THREE.Group(); win.position.set(-S + .005, 0, 1.45);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.7), new THREE.MeshBasicMaterial({ color: 0xfff1df }));
+  glass.rotation.y = Math.PI / 2; glass.position.set(.01, 1.75, 0); win.add(glass);
+  const frameMat = M.dark();
+  [[0, 2.62, 0, .05, .06, 1.6], [0, .88, 0, .05, .06, 1.6], [0, 1.75, -.78, .05, 1.8, .06], [0, 1.75, .78, .05, 1.8, .06], [0, 1.75, 0, .04, 1.74, .035]].forEach(([x, y, z, w, hh, d]) => {
+    const f = mesh(new THREE.BoxGeometry(w, hh, d), frameMat); f.position.set(x + .03, y, z); win.add(f);
+  });
+  const rod = mesh(new THREE.CylinderGeometry(.025, .025, 2.3, 8), frameMat); rod.rotation.x = Math.PI / 2; rod.position.set(.16, 2.86, 0); win.add(rod);
+  const curtMat = new THREE.MeshStandardMaterial({ color: 0xfbf8f3, roughness: 1, transparent: true, opacity: .93 });
+  for (const side of [-1, 1]) for (let k = 0; k < 4; k++) {
+    const p = mesh(new THREE.CylinderGeometry(.075, .075, 2.0, 10, 1, false, 0, Math.PI), curtMat);
+    p.rotation.y = -Math.PI / 2; p.position.set(.16, 1.84, side * (.62 + k * .13)); win.add(p);
+  }
+  g.add(win);
+  // soft contact shadow under the room
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: .16 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -.36; ground.receiveShadow = true; g.add(ground);
+  return { group: g, floor, half: S, wallH };
+}
+
+function createLights(scene) {
+  const hemi = new THREE.HemisphereLight(0xfff5ec, 0xe7c4ad, 1.15); scene.add(hemi);
+  const key = new THREE.DirectionalLight(0xffe3c6, 2.3);
+  key.position.set(5, 11, 7); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near: 1, far: 30 });
+  key.shadow.bias = -.0004; key.shadow.normalBias = .02; key.shadow.radius = 4;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffa868, 1.0); rim.position.set(9, 3.5, -3); scene.add(rim);
+  const fill = new THREE.AmbientLight(0xffffff, .28); scene.add(fill);
+  const MOODS = {
+    day: { hemi: [0xfff5ec, 0xe7c4ad, 1.15], key: [0xffe3c6, 2.3, [5, 11, 7]], rim: [0xffa868, 1.0], fill: .28, exp: 1.08 },
+    morning: { hemi: [0xf4f6ff, 0xe9d6c8, 1.25], key: [0xfff3e6, 1.9, [-2, 11, 8]], rim: [0xffd2a8, .55], fill: .34, exp: 1.12 },
+    golden: { hemi: [0xffe6cf, 0xd99c7d, .95], key: [0xffb27a, 2.5, [8, 8.5, 6]], rim: [0xff8a48, 1.5], fill: .2, exp: 1.05 },
+    dusk: { hemi: [0xc9c3e6, 0xb99484, .8], key: [0xffa77a, 1.1, [8, 7, 5]], rim: [0xb48cff, .7], fill: .24, exp: 1.0 },
+  };
+  let cur = structuredClone(MOODS.day);
+  const C = (a, b, k) => new THREE.Color(a).lerp(new THREE.Color(b), k);
+  function apply(m) {
+    hemi.color.set(m.hemi[0]); hemi.groundColor.set(m.hemi[1]); hemi.intensity = m.hemi[2];
+    key.color.set(m.key[0]); key.intensity = m.key[1]; key.position.set(...m.key[2]);
+    rim.color.set(m.rim[0]); rim.intensity = m.rim[1]; fill.intensity = m.fill;
+  }
+  return {
+    hemi, key, rim, fill,
+    setMood(name, ms = 1600, renderer) {
+      const from = structuredClone(cur), to = MOODS[name];
+      return tween(ms, k => {
+        const m = {
+          hemi: [C(from.hemi[0], to.hemi[0], k), C(from.hemi[1], to.hemi[1], k), lerp(from.hemi[2], to.hemi[2], k)],
+          key: [C(from.key[0], to.key[0], k), lerp(from.key[1], to.key[1], k), from.key[2].map((v, i) => lerp(v, to.key[2][i], k))],
+          rim: [C(from.rim[0], to.rim[0], k), lerp(from.rim[1], to.rim[1], k)], fill: lerp(from.fill, to.fill, k),
+        };
+        apply(m);
+        if (renderer) renderer.toneMappingExposure = lerp(from.exp, to.exp, k);
+        if (k === 1) cur = structuredClone(to);
+      });
+    },
+  };
+}
+
+/* Generic low-poly models. Origin = floor centre of the footprint, facing +z. */
+const MODEL_SCALE = 1.22;
+function buildModel(cat) {
+  const g = new THREE.Group(), body = new THREE.Group();
+  body.scale.setScalar(MODEL_SCALE); g.add(body);
+  const add = (m, x, y, z) => { m.position.set(x, y, z); body.add(m); return m; };
+  if (cat === 'couch') {
+    const fab = M.fabric(), base = M.white(), leg = M.dark();
+    for (const [x, z] of [[-1.05, .36], [1.05, .36], [-1.05, -.36], [1.05, -.36]]) add(mesh(new THREE.CylinderGeometry(.035, .03, .12, 8), leg), x, .06, z);
+    add(rbox(2.3, .28, .95, .07, base), 0, .26, 0);
+    for (const x of [-.52, .52]) add(rbox(1.02, .17, .7, .07, fab), x, .48, .1);
+    add(rbox(2.3, .56, .24, .09, base), 0, .66, -.36);
+    for (const x of [-.52, .52]) { const c = add(rbox(1.0, .44, .2, .09, fab), x, .76, -.2); c.rotation.x = -.12; }
+    for (const x of [-1.05, 1.05]) add(rbox(.22, .58, .95, .08, base), x, .43, 0);
+    g.userData.size = { w: 2.3, d: .95, h: 1 };
+  } else if (cat === 'tv') {
+    const w = M.white(), d = M.dark(), wd = M.wood();
+    for (const x of [-.72, .72]) for (const z of [-.14, .14]) add(mesh(new THREE.CylinderGeometry(.025, .02, .14, 8), wd), x, .07, z);
+    add(rbox(1.75, .42, .44, .03, w), 0, .35, 0);
+    add(mesh(new THREE.BoxGeometry(.012, .34, .01), d), 0, .35, .222);
+    add(mesh(new THREE.BoxGeometry(.18, .08, .16), d), 0, .6, -.04);
+    add(mesh(new THREE.BoxGeometry(.05, .2, .04), d), 0, .7, -.06);
+    add(rbox(1.55, .9, .05, .02, d), 0, 1.22, -.06);
+    const scr = new THREE.Mesh(new THREE.PlaneGeometry(1.47, .82), new THREE.MeshStandardMaterial({ color: 0x232833, emissive: 0x3a4a66, emissiveIntensity: .35, roughness: .2, metalness: .3 }));
+    add(scr, 0, 1.22, -.032);
+    g.userData.size = { w: 1.75, d: .44, h: 1.7 };
+  } else if (cat === 'coffee_table') {
+    const top = M.white(), wd = M.wood();
+    for (const [x, z] of [[-.48, -.24], [.48, -.24], [-.48, .24], [.48, .24]]) { const l = add(mesh(new THREE.CylinderGeometry(.03, .022, .38, 8), wd), x, .19, z); l.rotation.z = x > 0 ? -.06 : .06; }
+    add(rbox(1.18, .07, .64, .03, top), 0, .41, 0);
+    add(rbox(.34, .05, .24, .01, M.color(0x8fb3a3)), -.2, .47, .02);
+    add(rbox(.3, .045, .21, .01, M.color(0xe3a07c)), -.19, .52, .03);
+    add(mesh(new THREE.CylinderGeometry(.06, .05, .2, 12), M.white()), .3, .54, -.06);
+    const leaf = add(mesh(new THREE.IcosahedronGeometry(.11, 0), M.color(0x86a888)), .3, .7, -.06); leaf.scale.y = 1.3;
+    g.userData.size = { w: 1.18, d: .64, h: .5 };
+  } else if (cat === 'rug') {
+    const base = mesh(new RoundedBoxGeometry(2.79, .012, 2.05, 2, .005), M.color(0xe6d8c4)); base.castShadow = false; add(base, 0, .02, 0);
+    const band = mesh(new THREE.BoxGeometry(2.4, .013, 1.66), M.color(0xc99f7a)); band.castShadow = false; add(band, 0, .021, 0);
+    const field = mesh(new THREE.BoxGeometry(2.16, .014, 1.42), M.color(0xe9dccb)); field.castShadow = false; add(field, 0, .022, 0);
+    const motif = mesh(new THREE.BoxGeometry(1.2, .015, .05), M.color(0xb5845e)); motif.castShadow = false; add(motif, 0, .023, 0);
+    g.userData.size = { w: 2.79, d: 2.05, h: .05 }; g.userData.flat = true;
+  } else if (cat === 'lamp') {
+    const dk = M.dark();
+    add(mesh(new THREE.CylinderGeometry(.15, .17, .04, 20), dk), 0, .02, 0);
+    add(mesh(new THREE.CylinderGeometry(.016, .016, 1.42, 8), dk), 0, .75, 0);
+    const shadeMat = new THREE.MeshStandardMaterial({ color: 0xfbf6ee, roughness: 1, side: THREE.DoubleSide, emissive: 0xffd9a0, emissiveIntensity: .35 });
+    const shade = add(mesh(new THREE.CylinderGeometry(.15, .23, .3, 24, 1, true), shadeMat), 0, 1.5, 0); shade.userData.keepEmissive = true;
+    const bulb = add(new THREE.Mesh(new THREE.SphereGeometry(.05, 12, 8), new THREE.MeshBasicMaterial({ color: 0xfff1d6 })), 0, 1.42, 0); bulb.userData.keepEmissive = true;
+    const glow = new THREE.PointLight(0xffc98a, .9, 4, 1.6); glow.position.set(0, 1.4, 0); body.add(glow);
+    g.userData.size = { w: .46, d: .46, h: 1.68 };
+  } else if (cat === 'bookshelf') {
+    const wf = M.white();
+    for (const x of [-.39, .39]) add(rbox(.04, 1.52, .32, .01, wf), x, .76, 0);
+    for (const y of [.02, .52, 1.02, 1.5]) add(rbox(.82, .04, .32, .01, wf), 0, y, 0);
+    for (const y of [.27, .77, 1.26]) add(mesh(new THREE.BoxGeometry(.03, .46, .3), wf), 0, y, 0);
+    const cols = [0x8fb3a3, 0xe3a07c, 0x9a9ccf, 0xd9c08a, 0xc97a62, 0x6f8fa8];
+    [[.04, -.3], [.54, .08], [1.04, -.3], [.54, -.3], [1.04, .1]].forEach(([y, x0], r) => {
+      let x = x0;
+      for (let k = 0; k < 4; k++) { const bw = .05 + ((r + k) % 3) * .015, bh = .3 + ((r * 3 + k) % 4) * .03; add(mesh(new THREE.BoxGeometry(bw, bh, .22), M.color(cols[(r + k) % cols.length])), x + bw / 2, y + .02 + bh / 2, .02); x += bw + .012; }
+    });
+    add(mesh(new THREE.CylinderGeometry(.06, .05, .1, 12), M.white()), .25, 1.57, 0);
+    const leaf = add(mesh(new THREE.IcosahedronGeometry(.1, 0), M.color(0x86a888)), .25, 1.7, 0); leaf.scale.y = 1.2;
+    g.userData.size = { w: .82, d: .32, h: 1.8 };
+  } else if (cat === 'game_console') {
+    add(rbox(.09, .36, .3, .03, M.white()), -.06, .18, 0);
+    add(rbox(.04, .34, .28, .015, M.dark()), 0, .18, 0);
+    add(rbox(.09, .36, .3, .03, M.white()), .06, .18, 0);
+    const pad = add(rbox(.2, .045, .11, .02, M.dark()), .26, .03, .12); pad.rotation.y = -.4;
+    g.userData.size = { w: .5, d: .34, h: .38 };
+  } else if (cat === 'mini_fridge') {
+    const wf = new THREE.MeshStandardMaterial({ color: 0xf6f4f1, roughness: .45, metalness: .05 }), dk = M.dark();
+    for (const [x, z] of [[-.19, -.19], [.19, -.19], [-.19, .19], [.19, .19]]) add(mesh(new THREE.CylinderGeometry(.02, .02, .04, 8), dk), x, .02, z);
+    add(rbox(.48, .82, .5, .03, wf), 0, .45, 0);
+    add(mesh(new THREE.BoxGeometry(.46, .008, .01), dk), 0, .68, .252);
+    add(rbox(.025, .22, .025, .01, dk), .18, .48, .26);
+    add(mesh(new THREE.CylinderGeometry(.03, .03, .1, 12), M.color(0xc94f3d)), -.1, .91, 0);
+    add(mesh(new THREE.CylinderGeometry(.03, .03, .1, 12), M.color(0x6f8fa8)), -.02, .91, .04);
+    g.userData.size = { w: .48, d: .5, h: .96 };
+  } else if (cat === 'speaker') {
+    const cab = M.white(), grille = M.dark(), wd = M.wood();
+    for (const [x, z] of [[-.13, -.13], [.13, -.13], [-.13, .13], [.13, .13]]) add(mesh(new THREE.CylinderGeometry(.02, .016, .08, 8), wd), x, .04, z);
+    add(rbox(.38, 1.0, .38, .04, cab), 0, .58, 0);
+    add(rbox(.32, .92, .02, .01, grille), 0, .58, .19);
+    const driver = r => new THREE.Mesh(new THREE.CircleGeometry(r, 24), new THREE.MeshStandardMaterial({ color: 0x55565c, roughness: .5 }));
+    add(driver(.06), 0, .88, .202); add(driver(.12), 0, .45, .202);
+    g.userData.size = { w: .38, d: .38, h: 1.1 };
+  } else {
+    const seat = M.fabric(), wd = M.wood();
+    for (const [x, z] of [[-.25, .22], [.25, .22], [-.25, -.22], [.25, -.22]]) {
+      const l = add(mesh(new THREE.CylinderGeometry(.028, .02, .4, 8), wd), x * 1.04, .2, z * 1.04); l.rotation.z = -x * .18; l.rotation.x = z * .18;
+    }
+    add(rbox(.68, .14, .64, .06, seat), 0, .46, .02);
+    const back = add(rbox(.68, .6, .14, .07, seat), 0, .8, -.27); back.rotation.x = -.14;
+    for (const x of [-.36, .36]) add(rbox(.08, .2, .52, .03, M.white()), x, .62, .03);
+    g.userData.size = { w: .7, d: .66, h: 1.1 };
+  }
+  const sz = g.userData.size; g.userData.size = { w: sz.w * MODEL_SCALE, d: sz.d * MODEL_SCALE, h: sz.h * MODEL_SCALE };
+  g.userData.category = cat;
+  return g;
+}
+
+/* deterministic layout - each category has favourite spots; overflow uses the free floor */
+const COFFEE = { x: .25, z: -.75 };
+const faceTo = (x, z, t = COFFEE) => Math.atan2(t.x - x, t.z - z);
+const SLOTS = {
+  couch: [{ x: .25, z: -2.35, r: 0 }, { x: 2.15, z: .1, r: -Math.PI / 2 }],
+  tv: [{ x: -2.68, z: -.75, r: Math.PI / 2 }, { x: 1.9, z: -2.7, r: 0 }],
+  coffee_table: [{ x: .25, z: -.75, r: 0 }, { x: -1.2, z: 1.7, r: .3 }],
+  chair: [{ x: 2.05, z: -.8 }, { x: -1.2, z: 1.3 }, { x: 1.75, z: 1.4 }, { x: .4, z: 2.1 }].map(s => ({ ...s, r: faceTo(s.x, s.z) })),
+};
+const OVERFLOW = [{ x: -1.6, z: 2.2 }, { x: .9, z: 2.3 }, { x: 2.3, z: 2.2 }, { x: -2.2, z: -2.2 }, { x: 2.3, z: -2.3 }].map(s => ({ ...s, r: faceTo(s.x, s.z) }));
+function pickSlot(cat, items) {
+  const taken = new Set(items.map(i => i.slotKey));
+  const list = (SLOTS[cat] || []).map((s, i) => ({ ...s, key: cat + i })).concat(OVERFLOW.map((s, i) => ({ ...s, key: 'o' + i })));
+  return list.find(s => !taken.has(s.key)) || { x: (Math.random() - .5) * 3, z: (Math.random() - .5) * 3, r: 0, key: uid('free') };
+}
+
+function setGlow(obj, amt, color = 0xff9a5c) {
+  obj.traverse(o => { if (o.isMesh && o.material?.emissive && !o.userData.keepEmissive) { o.material.emissive.set(color); o.material.emissiveIntensity = amt; } });
+}
+function setOpacity(obj, a) {
+  obj.traverse(o => { if (o.isMesh) { o.material.transparent = a < 1; o.material.opacity = a; o.material.depthWrite = a > .5; } });
+}
+function itemRootOf(obj) { while (obj && !obj.userData.itemId) obj = obj.parent; return obj; }
+function puff(scene, at, color = 0xffffff, n = 14) {
+  const geo = new THREE.SphereGeometry(.08, 8, 6);
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, roughness: 1, transparent: true }));
+    const a = (i / n) * Math.PI * 2, sp = .8 + Math.random() * .8;
+    m.position.copy(at); scene.add(m);
+    tween(700 + Math.random() * 300, k => {
+      m.position.set(at.x + Math.cos(a) * sp * k, at.y + .2 + k * .6 + Math.sin(k * 3) * .1, at.z + Math.sin(a) * sp * k);
+      m.scale.setScalar(1 + k * 1.6); m.material.opacity = 1 - k;
+    }, Ease.out).then(() => { scene.remove(m); m.material.dispose(); });
+  }
+}
+function projectToScreen(v3, camera, rect) {
+  const p = v3.clone().project(camera);
+  return { x: rect.left + (p.x + 1) / 2 * rect.width, y: rect.top + (1 - p.y) / 2 * rect.height, behind: p.z > 1 };
+}
+
+
+/* ===================== Round 3: any photo -> PNG, one model per type, speakers ===================== */
+const $ = s => document.querySelector(s);
+$('#avs').innerHTML = ALL.map(id => av(id, 30)).join('');
+$('#archBtn').innerHTML = icon('info', 16) + "How it's built";
+$('#addPill i').innerHTML = icon('plus', 16, 2.4);
+$('#aClose').innerHTML = icon('close', 14);
+document.querySelectorAll('.tab').forEach(t => t.innerHTML = t.dataset.side === 'L' ? '<b class="chad">C</b><span>Chad</span>' : icon('receipt', 18) + '<span>Bills</span><b class="badge" id="billBadge"></b>');
+
+/* ten categories: round 1's four, round 3's speakers, and round 5's five things
+   college roommates actually split for a living room */
+[
+  { id: 'speaker', label: 'Speaker', long: 'Speakers / sound system' },
+  { id: 'rug', label: 'Rug', long: 'Area rug' },
+  { id: 'lamp', label: 'Lamp', long: 'Floor lamp' },
+  { id: 'bookshelf', label: 'Bookshelf', long: 'Bookshelf' },
+  { id: 'game_console', label: 'Console', long: 'Game console' },
+  { id: 'mini_fridge', label: 'Mini fridge', long: 'Mini fridge' },
+].forEach(c => { CATEGORIES.push(c); CAT[c.id] = c; });
+const catLong = id => CAT[id].long || CAT[id].label;
+/* One zoned layout that reads well with one item or all ten:
+   back wall = seating (fridge as end table · couch · lamp · bookshelf),
+   centre = rug under the coffee table, left wall = media (speaker · TV · console),
+   front right = reading chair; the front-left floor stays open as the walkway. */
+const SEAT = { x: -.05, z: -.65 };
+const TV_TOP = .683;
+const SLOT3 = {
+  couch: { x: -.05, z: -2.35, r: 0 },
+  rug: { x: -.05, z: -.6, r: 0 },
+  coffee_table: { x: -.05, z: -.65, r: 0 },
+  chair: { x: 1.95, z: .35, r: faceTo(1.95, .35, SEAT) },
+  tv: { x: -2.68, z: -.75, r: Math.PI / 2 },
+  speaker: { x: -2.66, z: -2.3, r: Math.PI / 2 },
+  game_console: { x: -2.66, z: -.12, r: Math.PI / 2, onTv: true },
+  mini_fridge: { x: -1.92, z: -2.66, r: 0 },
+  lamp: { x: 1.66, z: -2.62, r: 0 },
+  bookshelf: { x: 2.47, z: -2.78, r: 0 },
+};
+/* the console sits on the TV stand when there is one, otherwise on the floor where the stand would be */
+const slotY = cat => SLOT3[cat].onTv && stacks.has('tv') ? TV_TOP : 0;
+function relayout() {
+  const gc = stacks.get('game_console'); if (!gc) return;
+  const o = gc.obj, y1 = slotY('game_console'), x1 = y1 ? SLOT3.game_console.x : -2.5;
+  if (Math.abs((o.userData.baseY ?? 0) - y1) < .001 && Math.abs(o.position.x - x1) < .001) return;
+  const y0 = o.position.y, x0 = o.position.x; o.userData.baseY = y1;
+  tween(700, k => { o.position.y = lerp(y0, y1, k) + Math.sin(k * Math.PI) * .35; o.position.x = lerp(x0, x1, k); }, Ease.inOut);
+}
+
+/* sample photos carry the formats phones actually produce; the pixels are painted, the PNG conversion is real */
+const SAMPLES3 = [
+  { ...SAMPLES[0], file: 'IMG_4021.HEIC', fmt: 'heic', bytes: 3.1e6 },
+  { ...SAMPLES[1], file: 'PXL_20260830_181204.jpg', fmt: 'jpeg', bytes: 4.4e6 },
+  { ...SAMPLES[2], file: 'IMG_20260902_101533.webp', fmt: 'webp', bytes: 1.2e6 },
+  { ...SAMPLES[3], file: 'IMG_4033.HEIC', fmt: 'heic', bytes: 2.8e6 },
+  { key: 'speaker', file: '20260910_194412.heif', fmt: 'heif', bytes: 2.2e6, draw: 'speaker', truth: 'speaker', guess: 'speaker', conf: .9, name: 'Living room speakers', price: 329, date: '2026-09-10' },
+  { key: 'rug', file: 'IMG_4102.HEIC', fmt: 'heic', bytes: 2.6e6, draw: 'rug', truth: 'rug', guess: 'rug', conf: .9, name: 'Jute area rug', price: 149, date: '2026-09-03' },
+  { key: 'lamp', file: 'PXL_20260915_204411.jpg', fmt: 'jpeg', bytes: 3.9e6, draw: 'lamp', truth: 'lamp', guess: 'lamp', conf: .9, name: 'Arc floor lamp', price: 79, date: '2026-09-15' },
+  { key: 'bookshelf', file: 'IMG_20260916_120233.webp', fmt: 'webp', bytes: 1.4e6, draw: 'bookshelf', truth: 'bookshelf', guess: 'bookshelf', conf: .9, name: 'Cube bookshelf', price: 95, date: '2026-09-16' },
+  { key: 'console', file: 'IMG_4110.HEIC', fmt: 'heic', bytes: 2.9e6, draw: 'console', truth: 'game_console', guess: 'game_console', conf: .9, name: 'PlayStation 5', price: 499, date: '2026-09-20' },
+  { key: 'fridge', file: '20260918_093012.jpg', fmt: 'jpeg', bytes: 3.3e6, draw: 'fridge', truth: 'mini_fridge', guess: 'mini_fridge', conf: .9, name: 'Mini fridge', price: 159, date: '2026-09-18' },
+];
+const FORMATS = {
+  heic: { label: 'HEIC', from: 'iPhone camera default' }, heif: { label: 'HEIF', from: 'iPhone / Samsung "high efficiency"' },
+  jpeg: { label: 'JPEG', from: 'Android and most cameras' }, png: { label: 'PNG', from: 'screenshots' },
+  webp: { label: 'WebP', from: 'Android and web downloads' }, avif: { label: 'AVIF', from: 'newer Android and web' },
+  gif: { label: 'GIF', from: 'web' }, bmp: { label: 'BMP', from: 'Windows' }, tiff: { label: 'TIFF', from: 'scanners (Safari only)' },
+  dng: { label: 'DNG (RAW)', from: 'pro camera modes' }, unknown: { label: 'unknown', from: 'unrecognised file' },
+};
+const ACCEPT = 'image/*,.heic,.heif,.avif,.webp,.tif,.tiff,.dng';
+const MAX_EDGE = 1568, MAX_BYTES = 3.75e6;
+const mb = n => (n / 1e6).toFixed(n < 1e6 ? 2 : 1) + ' MB';
+
+/* identify the real format from the file's first bytes (phones often send HEIC with an empty MIME type) */
+async function sniffFormat(file) {
+  const b = new Uint8Array(await file.slice(0, 32).arrayBuffer());
+  const str = (s, e) => String.fromCharCode(...b.slice(s, e));
+  if (b[0] === 0xFF && b[1] === 0xD8) return 'jpeg';
+  if (b[0] === 0x89 && str(1, 4) === 'PNG') return 'png';
+  if (str(0, 3) === 'GIF') return 'gif';
+  if (str(0, 4) === 'RIFF' && str(8, 12) === 'WEBP') return 'webp';
+  if (str(0, 2) === 'BM') return 'bmp';
+  if (str(0, 4) === 'II*\0' || str(0, 4) === 'MM\0*') return /\.dng$/i.test(file.name) ? 'dng' : 'tiff';
+  if (str(4, 8) === 'ftyp') {
+    const brand = str(8, 12), compat = str(16, 32);
+    if (/^avi[fs]$/.test(brand) || /avif/.test(compat)) return 'avif';
+    if (/^(heic|heix|hevc|hevx|heim|heis)$/.test(brand)) return 'heic';
+    if (/^(mif1|msf1)$/.test(brand)) return 'heif';
+  }
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  return { jpg: 'jpeg', jpeg: 'jpeg', heic: 'heic', heif: 'heif', png: 'png', webp: 'webp', avif: 'avif', gif: 'gif', bmp: 'bmp', tif: 'tiff', tiff: 'tiff', dng: 'dng' }[ext] || 'unknown';
+}
+let heicLib = null;
+function loadHeic2any() {
+  heicLib ||= new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+    sc.onload = () => window.heic2any ? res(window.heic2any) : rej(new Error('heic2any did not load'));
+    sc.onerror = () => rej(new Error('Could not load the HEIC decoder (offline?)'));
+    document.head.append(sc);
+  });
+  return heicLib;
+}
+/* decode anything the browser can; HEIC/HEIF falls back to libheif (heic2any) where the browser can't */
+async function decode(blob, fmt, step) {
+  if (fmt === 'dng') throw new Error("RAW (DNG) photos can't be read in a browser. Export it as JPEG or HEIC and try again.");
+  try { return { bmp: await createImageBitmap(blob), via: 'browser' }; }
+  catch (e) { if (fmt !== 'heic' && fmt !== 'heif') throw new Error(`This browser can't read ${FORMATS[fmt].label} images. Try JPEG, PNG or HEIC.`); }
+  step('Decoding HEIC with libheif (heic2any)…');
+  const lib = await loadHeic2any();
+  const out = await lib({ blob, toType: 'image/png' });
+  return { bmp: await createImageBitmap(Array.isArray(out) ? out[0] : out), via: 'libheif (heic2any)' };
+}
+/* standard payload for classification: PNG, long edge <= 1568 px, shrunk until under the size cap */
+async function toPNG(bmp) {
+  let scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height)), blob, w, hh;
+  for (let i = 0; i < 6; i++) {
+    w = Math.max(1, Math.round(bmp.width * scale)); hh = Math.max(1, Math.round(bmp.height * scale));
+    const c = document.createElement('canvas'); c.width = w; c.height = hh;
+    c.getContext('2d').drawImage(bmp, 0, 0, w, hh);
+    blob = await new Promise(r => c.toBlob(r, 'image/png'));
+    if (blob.size <= MAX_BYTES) break;
+    scale *= .8;
+  }
+  return { blob, w, h: hh, url: URL.createObjectURL(blob) };
+}
+
+const canvas = $('#scene');
+const renderer = createRenderer(canvas);
+const scene = new THREE.Scene();
+const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 100);
+cam.position.set(14, 12.2, 14); cam.lookAt(-.3, .85, -.3);
+const lights = createLights(scene);
+const room = buildRoom(); scene.add(room.group);
+const itemsGroup = new THREE.Group(); room.group.add(itemsGroup);
+/* one 3D representation per category; every item of that type lives in its stack */
+const stacks = new Map();
+const itemById = id => house.items.find(i => i.id === id);
+const stackItems = cat => (stacks.get(cat)?.ids || []).map(itemById).filter(Boolean);
+
+const view = { dx: 0, zoom: .55, y: -1.6, tdx: 0, tzoom: .55, ty: -1.6 };
+let signedIn = false, movedOutAny = false;
+const drawers = { L: false, R: false };
+function targets() {
+  const w = innerWidth, dw = $('#drawerL').offsetWidth + 16;
+  const L = drawers.L ? dw : 0, R = drawers.R ? dw : 0;
+  view.tdx = (L - R) / 2;
+  const base = house.items.length ? 1 : 1.06;
+  view.tzoom = base * Math.min(1, Math.max(.6, (w - L - R) / (w * .74)));
+}
+function resize() { renderer.setSize(innerWidth, innerHeight); targets(); }
+addEventListener('resize', resize);
+function setDrawer(s, on = !drawers[s]) { drawers[s] = on; $('#drawer' + s).classList.toggle('open', on); targets(); }
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => setDrawer(t.dataset.side));
+
+function refresh() {
+  const n = house.items.length, total = house.items.reduce((a, i) => a + i.price, 0);
+  $('#roomstat').innerHTML = n ? `${icon('rent', 15)}${n} thing${n === 1 ? '' : 's'} in the room <small>· ${money(total)} shared</small>` : `${icon('rent', 15)}Empty room <small>· add whenever you buy something together</small>`;
+  const m = $('#marker');
+  m.classList.toggle('gone', !signedIn);
+  m.classList.toggle('compact', n > 0);
+  m.classList.toggle('busy', addOpen);
+  $('#hint').style.opacity = signedIn && !n && !addOpen && !movedOutAny ? 1 : 0;
+  $('#chips').innerHTML = [...stacks].filter(([, s]) => s.ids.length > 1).map(([cat, s]) => `<span class="chip" data-chip="${cat}">${icon(cat, 12, 2)}×${s.ids.length}</span>`).join('');
+  targets();
+}
+house.on(refresh);
+
+/* ---------------- Chad ---------------- */
+const ITEM_WORDS = { game_console: /(playstation|ps5|xbox|nintendo|switch|controller|gaming|video game)/, mini_fridge: /(fridge|refrigerator|cooler)/, rug: /\b(rug|carpet)\b/, lamp: /\b(lamp|lighting)\b/, bookshelf: /(bookshelf|bookcase|shelf|shelves)/, speaker: /(speaker|soundbar|sound ?bar|sound system|subwoofer|stereo)/, couch: /(couch|sofa|sectional|loveseat)/, tv: /\b(tv|television|telly)\b/, coffee_table: /(coffee table|table)/, chair: /(chair|armchair|seat)/ };
+function findItem(t) {
+  const all = [...house.items, ...Object.values(house.keptBy).flat()];
+  /* a distinctive name word ("linen", "folding") picks one item; generic type words fall through to the whole type */
+  const GENERIC = /^(chair|chairs|armchair|sofa|couch|table|coffee|speaker|speakers|console|living|room)$/;
+  const byName = all.find(i => i.name.toLowerCase().split(/\W+/).filter(w => w.length > 3 && !GENERIC.test(w)).some(w => t.includes(w)));
+  if (byName) return byName;
+  for (const [cat, re] of Object.entries(ITEM_WORDS)) if (re.test(t)) {
+    const inRoom = house.items.filter(i => i.category === cat);
+    if (inRoom.length > 1) return { group: inRoom, cat };
+    return inRoom[0] || all.find(i => i.category === cat) || { missing: cat };
+  }
+  return null;
+}
+function keeperOf(item) { for (const [rid, its] of Object.entries(house.keptBy)) if (its.some(i => i.id === item.id)) return rid; return null; }
+function chadReply(text) {
+  const t = text.toLowerCase();
+  const it = findItem(t);
+  const who = ROOMMATES.find(r => new RegExp(`\\b${r.name.toLowerCase()}\\b`).test(t) || (r.you && /\b(my|me|i|mine)\b/.test(t)));
+  if (it?.missing) return `There's no ${catLong(it.missing).toLowerCase()} in the room yet. If you bought one together, tap the **+** on the floor and I'll keep track of who paid what.`;
+  if (it?.group) return `You have **${it.group.length} ${catLong(it.cat).toLowerCase()} items**, shown as one model in the room (tap it and use the arrows): ${it.group.map(i => `**${i.name}** ${money2(i.price)} (${Object.entries(i.splits).map(([rid, v]) => `${RM[rid].name} ${money2(v)}`).join(', ')})`).join('; ')}.`;
+  if (it) {
+    const parts = Object.entries(it.splits).map(([rid, v]) => `${RM[rid].name} ${money2(v)}`).join(', ');
+    const top = Object.entries(it.splits).sort((a, b) => b[1] - a[1])[0];
+    const even = new Set(Object.values(it.splits).map(v => Math.round(v))).size === 1;
+    const k = keeperOf(it);
+    if (k) return `The **${it.name}** already went home with ${RM[k].name}. They kept it at ${money2(house.keptBy[k].find(i => i.id === it.id).value ?? it.price)}, and the buyout is in the Bills tab.`;
+    const sug = suggestedValue(it);
+    if (/(keep|buyout|buy out|move.?out|worth|value|sell)/.test(t))
+      return `If someone keeps the **${it.name}**, a fair value today is about **${money(sug.value)}** (it cost ${money(it.price)} on ${fmtDate(it.date)}, minus roughly 20% a year of wear). Whoever keeps it pays each co-owner their share of that: ${Object.entries(it.splits).map(([rid, v]) => `${RM[rid].name} ${money2(round2(sug.value * v / it.price))}`).join(', ')}. Tap the item and hit **Move out** when you're ready.`;
+    if (/\bwhen\b/.test(t)) return `You bought the **${it.name}** on **${fmtDate(it.date)}** for ${money2(it.price)}.`;
+    return `The **${it.name}** (${catLong(it.category).toLowerCase()}) cost **${money2(it.price)}** on ${fmtDate(it.date)}. Split: ${parts}.${even ? ' That was an even split.' : ` ${RM[top[0]].name} put in the most.`} If anyone remembers it differently, tap it in the room to check, and I can help you sort it out.`;
+  }
+  if (who && /(own|paid|pay|bought|share|stake|put in|chip)/.test(t)) {
+    const mine = house.items.filter(i => i.splits[who.id]);
+    if (!mine.length) return `${who.you ? "You don't" : `${who.name} doesn't`} have a share in anything in the room right now.`;
+    const sum = round2(mine.reduce((a, i) => a + i.splits[who.id], 0));
+    return `${who.you ? 'You have' : `${who.name} has`} a share in **${mine.length} thing${mine.length === 1 ? '' : 's'}**, ${money2(sum)} in total: ${mine.map(i => `${i.name} ${money2(i.splits[who.id])}`).join(', ')}.`;
+  }
+  if (/(furniture|everything|all the stuff|what do we have|what's in the room|inventory|list)/.test(t)) {
+    if (!house.items.length) return `The room's empty right now. Add things as you buy them and I'll remember who paid for what.`;
+    return `Here's everything you share: ${house.items.map(i => `**${i.name}** ${money(i.price)}`).join(', ')}. That's ${money(round2(house.items.reduce((a, i) => a + i.price, 0)))} in total, split ${ROOMMATES.map(r => `${r.name} ${money(round2(stakes()[r.id]))}`).join(' / ')}.`;
+  }
+  return mockChatReply(text);
+}
+/* SEAM 2, now live: Chad streams from Claude Sonnet on Bedrock via the backend.
+   The ledger below is the only context; chadReply() stays as the offline answer. */
+const history = [];
+function ledgerContext() {
+  const paid = s => Object.fromEntries(Object.entries(s).map(([rid, v]) => [RM[rid].name, v]));
+  return {
+    today: today(), you: 'Alex', roommates: ROOMMATES.map(r => r.name),
+    itemsInRoom: house.items.map(i => ({ name: i.name, category: catLong(i.category), price: i.price, bought: i.date, paid: paid(i.splits), sameTypeCount: stackItems(i.category).length })),
+    movedOut: Object.entries(house.keptBy).flatMap(([rid, its]) => its.map(i => ({ name: i.name, keptBy: RM[rid].name, agreedValue: i.value ?? i.price }))),
+    bills: house.bills.map(b => ({ name: b.name, amount: b.amount, paidBy: RM[b.paidBy].name, splitAmong: b.among.map(id => RM[id].name), date: b.date, kind: b.kind })),
+    buyoutsOwed: house.buyouts.map(b => ({ item: b.itemName, from: RM[b.from].name, to: RM[b.to].name, amount: b.amount })),
+    whoOwesWhomNow: houseTransfers().map(x => ({ from: RM[x.from].name, to: RM[x.to].name, amount: x.amount })),
+  };
+}
+async function chadStream(text, onDelta) {
+  history.push({ role: 'user', content: text });
+  const res = await api('/api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages: history, ledger: ledgerContext() }) });
+  if (!res.ok) {
+    history.pop();
+    const e = (await res.json().catch(() => ({}))).error || {};
+    if (e.code === 'aws_auth') setHealth({ ok: false, error: e });
+    throw Object.assign(new Error(e.message || `Backend error ${res.status}`), { title: e.code === 'aws_auth' ? 'AWS session expired' : "Chad couldn't answer" });
+  }
+  const reader = res.body.getReader(), dec = new TextDecoder();
+  let buf = '', answer = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf('\n\n')) >= 0) {
+      const line = buf.slice(0, i).replace(/^data: /, ''); buf = buf.slice(i + 2);
+      if (!line.trim()) continue;
+      const ev = JSON.parse(line);
+      if (ev.type === 'text') { answer += ev.text; onDelta(ev.text); }
+      if (ev.type === 'notice') { answer += ev.message; onDelta(ev.message); }
+      if (ev.type === 'error') { history.pop(); if (ev.code === 'aws_auth') setHealth({ ok: false, error: ev }); throw Object.assign(new Error(ev.message), { title: ev.code === 'aws_auth' ? 'AWS session expired' : "Chad couldn't answer" }); }
+    }
+  }
+  history.push({ role: 'assistant', content: answer || '(no answer)' });
+}
+const chat = mountChat($('#chatRoot'), {
+  name: 'Chad', sub: 'Your roommate helper',
+  pill: 'Claude Sonnet · live', foot: 'Live: streamed from Claude Sonnet on Amazon Bedrock through the local backend, with this household\'s ledger as context.',
+  stream: chadStream,
+  greet: "Hey Alex, I'm Chad, your livingSpaces helper 👋 I keep track of the stuff you split and the bills. Ask me who bought what, what something's worth now, or for help settling a dispute.",
+  suggestions: ['Who paid for the couch?', 'Tell me about our chairs', "What's my share of everything?", 'Maya never does the dishes'],
+  placeholder: 'Ask Chad about furniture, bills, or a dispute…',
+  reply: chadReply,
+});
+/* backend + AWS session status, shown top right and rechecked every minute */
+const API = new URLSearchParams(location.search).get('api') || 'http://127.0.0.1:8787';
+function setHealth(h) {
+  const el = $('#livePill');
+  if (h === undefined) return;
+  if (h === null) { el.className = 'livepill bad'; el.textContent = 'Backend offline'; el.title = `Start it with: node server/index.mjs (expected at ${API})`; return; }
+  if (h.ok) { el.className = 'livepill ok'; el.textContent = `Live · Bedrock ${h.region || ''}`.trim(); el.title = `Haiku: ${h.models?.classify}\nSonnet: ${h.models?.chat}\nProfile: ${h.profile}`; return; }
+  el.className = 'livepill bad'; el.textContent = h.error?.code === 'aws_auth' ? 'AWS session expired' : 'Backend error'; el.title = h.error?.message || '';
+}
+async function checkHealth() { try { const r = await fetch(API + '/api/health'); setHealth(await r.json()); } catch { setHealth(null); } }
+checkHealth(); setInterval(checkHealth, 60000);
+mountBills($('#billsRoot'));
+const badge = () => { const n = houseTransfers().length, b = $('#billBadge'); if (b) { b.textContent = n; b.style.display = n ? '' : 'none'; } };
+house.on(badge); badge();
+
+/* ---------------- add card ---------------- */
+let addOpen = false, nextSlot = { x: 0, z: 0 };
+const W = { step: 1, src: null, photo: null, png: null, sample: null, fileName: '', result: null, cat: null, form: null, token: 0, failed: false };
+function computeNextSlot() {
+  if (!house.items.length) { nextSlot = { x: 0, z: 0 }; return; }
+  let best = null, bestScore = -Infinity;
+  for (let x = -2; x <= 2.01; x += .5) for (let z = -2; z <= 2.01; z += .5) {
+    let dmin = Infinity;
+    for (const { obj: o } of stacks.values()) { if (o.userData.flat) continue; const s = o.userData.size; dmin = Math.min(dmin, Math.hypot(o.position.x - x, o.position.z - z) - Math.max(s.w, s.d) / 2); }
+    const score = Math.min(dmin, 1.6) - .25 * Math.hypot(x - .2, z - .6);
+    if (score > bestScore) { bestScore = score; best = { x, z }; }
+  }
+  nextSlot = best;
+}
+function paintPhotoStep() {
+  $('#photoRoot').innerHTML = `
+    <label class="rr-drop" style="padding:16px 12px">
+      <input type="file" accept="${ACCEPT}" capture="environment">
+      <span class="ic">${icon('camera', 26)}</span><b>Take or upload a photo</b>
+      <span class="fmts"><span class="hl">HEIC</span><span class="hl">HEIF</span><span>JPEG</span><span>PNG</span><span>WebP</span><span>AVIF</span><span>GIF</span><span>BMP</span><span>TIFF*</span></span>
+      <span class="rr-muted rr-small">iPhone and Android formats; everything becomes a PNG before it's sent</span>
+    </label>
+    <div class="rr-muted rr-small" style="margin:12px 2px 8px;font-weight:650">No photo handy? Try a sample:</div>
+    <div class="samples3">${SAMPLES3.map(s => `<button type="button" class="rr-sample" data-k="${s.key}"><img alt="" src="${samplePhoto(s.draw)}"><span class="fmt">${FORMATS[s.fmt].label}</span><span>${s.file.length > 16 ? s.file.slice(0, 13) + '…' : s.file}</span></button>`).join('')}</div>`;
+  const drop = $('#photoRoot .rr-drop'), inp = drop.querySelector('input');
+  const take = f => { if (f) { W.src = { file: f, name: f.name, bytes: f.size }; W.sample = null; W.fileName = f.name; go(2); } };
+  inp.onchange = () => take(inp.files[0]);
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); take(e.dataTransfer.files[0]); };
+  document.querySelectorAll('#photoRoot .rr-sample').forEach(b => b.onclick = () => {
+    const s = SAMPLES3.find(x => x.key === b.dataset.k);
+    W.src = { sample: s, name: s.file, bytes: s.bytes }; W.sample = s; W.fileName = s.file; go(2);
+  });
+}
+function openAdd() {
+  closePop();
+  Object.assign(W, { step: 1, src: null, photo: null, png: null, sample: null, fileName: '', result: null, cat: null, form: null, failed: false });
+  addOpen = true; $('#acard').classList.add('open'); refresh();
+  paintPhotoStep(); go(1);
+}
+function closeAdd() { addOpen = false; W.token++; $('#acard').classList.remove('open'); refresh(); }
+function paintSteps() {
+  const names = ['Photo', 'Type', 'Details'];
+  $('#steps').innerHTML = names.map((n, i) => `${i ? '<span class="sep"></span>' : ''}<i class="${i + 1 === W.step ? 'on' : i + 1 < W.step ? 'done' : ''}">${i + 1 < W.step ? '✓' : i + 1}</i><b>${n}</b>`).join('');
+}
+/* the conversion pipeline, shown step by step in the card */
+function pipeRow(id, title, detail, state = '') { return `<li id="pp-${id}" class="${state}"><span class="st">${state === 'done' ? '✓' : state === 'err' ? '!' : ''}</span><span><b>${title}</b>${detail}</span></li>`; }
+function setRow(id, title, detail, state) { const el = $('#pp-' + id); if (el) el.outerHTML = pipeRow(id, title, detail, state); }
+async function runPipeline(tok) {
+  const src = W.src, live = tok => tok === W.token && W.step === 2;
+  $('#pipe').innerHTML = pipeRow('read', 'Reading photo', `${esc(src.name)}`, 'active') + pipeRow('dec', 'Decode', 'waiting') + pipeRow('png', 'Convert to PNG', 'waiting') + pipeRow('ai', 'Classify', 'waiting');
+  try {
+    let blob, fmt;
+    if (src.sample) { blob = await (await fetch(samplePhoto(src.sample.draw))).blob(); fmt = src.sample.fmt; }
+    else { blob = src.file; fmt = await sniffFormat(src.file); }
+    await sleep(350); if (!live(tok)) return;
+    setRow('read', `Received ${esc(src.name)}`, `${FORMATS[fmt].label} · ${FORMATS[fmt].from} · ${mb(src.bytes)}${src.sample ? ' (sample: format simulated)' : ''}`, 'done');
+    setRow('dec', 'Decoding', fmt === 'heic' || fmt === 'heif' ? 'HEIC/HEIF image…' : `${FORMATS[fmt].label} image…`, 'active');
+    const { bmp, via } = await decode(blob, src.sample ? 'jpeg' : fmt, msg => setRow('dec', 'Decoding', msg, 'active'));
+    if (!live(tok)) return;
+    setRow('dec', 'Decoded', `${bmp.width}×${bmp.height} · ${src.sample ? (fmt === 'heic' || fmt === 'heif' ? 'HEIC path simulated for samples' : 'browser decoder') : via}`, 'done');
+    setRow('png', 'Converting to PNG', 'resizing and encoding…', 'active');
+    const png = await toPNG(bmp); W.png = png; W.photo = png.url;
+    await sleep(250); if (!live(tok)) return;
+    setRow('png', 'Converted to PNG', `${png.w}×${png.h} · ${mb(png.blob.size)} · long edge ≤ ${MAX_EDGE}px, under 3.75 MB`, 'done');
+    $('#scanImg').src = png.url; $('#scan').classList.add('on');
+    await classifyStep(tok, png);
+  } catch (e) {
+    if (!live(tok)) return;
+    W.failed = true; $('#scan').classList.remove('on');
+    const row = document.querySelector('#pipe li.active')?.id?.slice(3) || 'dec';
+    setRow(row, "Couldn't use this photo", esc(e.message), 'err');
+    $('#verdict').innerHTML = `<button class="rr-btn soft sm" id="retake">${icon('camera', 14)}Try another photo</button>`;
+    $('#retake').onclick = () => { W.src = null; go(1); };
+  }
+}
+/* SEAM 1, now live: the PNG goes to the local backend (server/index.mjs), which
+   calls Claude Haiku on Bedrock with the five category definitions and a
+   JSON-schema output whose category enum is couch | tv | coffee_table | chair | speaker. */
+const blobToB64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+async function api(path, opts = {}) {
+  let res;
+  try { res = await fetch(API + path, opts); }
+  catch { throw Object.assign(new Error(`Can't reach the livingSpaces backend at ${API}. Start it with: node server/index.mjs`), { code: 'offline', title: 'Backend offline' }); }
+  return res;
+}
+async function liveClassify(png) {
+  const res = await api('/api/classify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image: await blobToB64(png.blob), categories: CATEGORIES.map(c => c.id) }) });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) { const e = body.error || {}; throw Object.assign(new Error(e.message || `Backend error ${res.status}`), { code: e.code, title: e.code === 'aws_auth' ? 'AWS session expired' : 'Classification failed' }); }
+  const ranked = Object.entries(body.scores).map(([id, p]) => ({ id, p })).sort((a, b) => b.p - a.p);
+  return { ...body, ranked };
+}
+async function classifyStep(tok, png) {
+  const live = () => tok === W.token && W.step === 2;
+  setRow('ai', 'Asking Claude Haiku', `<code>POST ${esc(API)}/api/classify</code> · image/png · ${mb(png.blob.size * 4 / 3)} base64 · live on Bedrock`, 'active');
+  try {
+    const r = await liveClassify(png);
+    if (!live()) return;
+    setRow('ai', 'Classified by Claude Haiku', `${esc(r.model)} · ${catLong(r.category)} ${Math.round(r.confidence * 100)}% · ${(r.ms / 1000).toFixed(1)}s`, 'done');
+    finishClassify(r);
+  } catch (e) {
+    if (!live()) return;
+    setHealth(e.code === 'aws_auth' ? { ok: false, error: { code: 'aws_auth' } } : e.code === 'offline' ? null : undefined);
+    setRow('ai', esc(e.title || 'Classification failed'), `${esc(e.message)}<span class="acts2"><button class="rr-btn soft sm" id="aiRetry">Retry</button><button class="rr-btn ghost sm" id="aiSim">Use a simulated result</button></span>`, 'err');
+    $('#aiRetry').onclick = () => classifyStep(tok, png);
+    $('#aiSim').onclick = async () => {
+      setRow('ai', 'Simulating', 'offline stand-in, not Claude', 'active');
+      const r = await classify3({ sample: W.sample, fileName: W.fileName });
+      if (!live()) return;
+      setRow('ai', 'Classified (simulated)', `offline stand-in · ${catLong(r.category)} ${Math.round(r.confidence * 100)}%`, 'done');
+      finishClassify(r);
+    };
+  }
+}
+function finishClassify(r) {
+  W.result = r; W.cat = r.category; $('#scan').classList.remove('on');
+  $('#aNext').disabled = false;
+  paintVerdict();
+}
+/* offline stand-in, used only when the user picks "Use a simulated result" */
+async function classify3({ sample, fileName }) {
+  const isSpk = sample?.truth === 'speaker' || /(speaker|soundbar|sound.?bar|subwoofer|sonos|bose|stereo|hifi)/i.test(fileName || '');
+  const r = await mockClassify({ sample: isSpk ? null : sample, fileName: isSpk ? '' : fileName });
+  if (isSpk) return { category: 'speaker', confidence: .9, suggestedName: sample?.name || '', model: r.model, ranked: [{ id: 'speaker', p: .9 }, { id: 'tv', p: .06 }, { id: 'chair', p: .02 }, { id: 'couch', p: .01 }, { id: 'coffee_table', p: .01 }] };
+  return r;
+}
+async function go(n) {
+  W.step = n; paintSteps();
+  document.querySelectorAll('.astep').forEach(s => s.classList.toggle('on', +s.dataset.s === n));
+  $('#aBack').style.visibility = n === 1 ? 'hidden' : 'visible';
+  const next = $('#aNext');
+  next.innerHTML = n === 3 ? icon('spark', 16) + 'Put it in the room' : 'Next';
+  next.disabled = n === 1 ? !W.src : n === 2 ? !W.cat : false;
+  if (n === 1) paintPhotoStep();
+  if (n === 2) {
+    if (!W.result) {
+      $('#scanImg').removeAttribute('src');
+      $('#verdict').innerHTML = ''; $('#catRoot').innerHTML = '';
+      runPipeline(++W.token);
+    } else paintVerdict();
+  }
+  if (n === 3) {
+    $('#mini').innerHTML = `<img src="${W.photo}" alt=""><div><b>${icon(W.cat, 16)}${catLong(W.cat)}</b><span class="rr-muted rr-small">${W.sample ? 'Sample details prefilled for the demo' : 'What you paid and who chipped in'}${stacks.has(W.cat) ? ` · joins the ${catLong(W.cat).toLowerCase()} already in the room` : ''}</span></div>`;
+    W.form = detailsForm($('#formRoot'), W.sample ? { name: W.sample.name, price: W.sample.price, date: W.sample.date } : { name: W.cat === W.result?.category ? W.result?.suggestedName || '' : '' });
+  }
+}
+function paintVerdict() {
+  const r = W.result, low = r.confidence < .7, changed = W.cat !== r.category;
+  $('#verdict').innerHTML = changed
+    ? `<div class="v">Got it, it's a <em>${catWord(W.cat)}</em></div><span class="rr-pill good">${icon('check', 12)}Corrected by you</span>`
+    : `<div class="v">Looks like a <em>${catWord(r.category)}</em></div><span class="rr-pill ${low ? 'warn' : 'ai'}">${low ? 'Not sure, please check' : icon('spark', 12) + Math.round(r.confidence * 100) + '% sure'}</span>`;
+  if (r.reason && !changed) $('#verdict').insertAdjacentHTML('beforeend', `<div class="reason">“${esc(r.reason)}”</div>`);
+  $('#verdict').insertAdjacentHTML('beforeend', `<div class="rr-muted rr-small" style="margin:8px 0 6px">Not right? Pick the right one:</div>`);
+  categoryPicker($('#catRoot'), r, c => { W.cat = c; paintVerdict(); });
+}
+$('#aNext').onclick = () => {
+  if (W.step < 3) return go(W.step + 1);
+  const res = W.form.read();
+  if (res.error) return toast(res.error);
+  addItem({ ...res.value, category: W.cat, photo: W.photo });
+  closeAdd();
+};
+$('#aBack').onclick = () => { if (W.step === 2) { W.src = null; W.result = null; W.cat = null; } go(W.step - 1); };
+$('#aClose').onclick = closeAdd;
+$('#addPill').onclick = openAdd;
+
+function addItem(data, quiet = false) {
+  const item = { id: uid('it'), ...data, slotKey: data.category };
+  house.items.push(item);
+  const st = stacks.get(item.category);
+  if (st) {
+    /* same type already in the room: no second model, the existing one takes it */
+    st.ids.push(item.id);
+    const o = st.obj, y0 = o.userData.baseY ?? 0;
+    tween(520, k => { const s = 1 + Math.sin(k * Math.PI) * .12; o.scale.set(s, 1 - Math.sin(k * Math.PI) * .08, s); o.position.y = y0 + Math.sin(k * Math.PI) * .25; }, Ease.out);
+    puff(itemsGroup, new THREE.Vector3(o.position.x, .9, o.position.z), 0xffe2c4, 8);
+    house.changed();
+    if (!quiet) toast(`${icon(item.category, 16)} ${esc(item.name)} joined the ${catLong(item.category).toLowerCase()} · tap it and use the arrows`, 3400);
+    return;
+  }
+  const slot = SLOT3[item.category];
+  const m = buildModel(item.category);
+  m.userData.itemId = 'stack:' + item.category; m.userData.cat = item.category;
+  const y = slotY(item.category); m.userData.baseY = y;
+  m.rotation.y = slot.r;
+  itemsGroup.add(m); stacks.set(item.category, { obj: m, ids: [item.id] });
+  if (m.userData.flat) {
+    /* rugs unroll in place instead of dropping through the furniture */
+    m.position.set(slot.x, y, slot.z); m.scale.set(.01, 1, 1);
+    tween(800, k => m.scale.set(Math.max(.01, Ease.outBack(k)), 1, 1), Ease.linear);
+  } else {
+    m.position.set(slot.x, 5, slot.z); m.scale.setScalar(.7);
+    tween(900, k => { m.position.y = lerp(5, y, k); }, Ease.outBounce);
+    tween(600, k => m.scale.setScalar(lerp(.7, 1, k)), Ease.outBack);
+    setTimeout(() => puff(itemsGroup, new THREE.Vector3(slot.x, y, slot.z), 0xf3e6da, 10), 330);
+  }
+  relayout(); computeNextSlot(); house.changed();
+  if (!quiet) toast(`${icon(item.category, 16)} ${esc(item.name)} added · split ${Object.keys(item.splits).length} ways`);
+}
+
+/* ---------------- picking, hover, popover with pager ---------------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let hovered = null, selected = null, selCat = null, popIdx = 0, popPage = 1, keeper = null, value = 0;
+function pick(e) {
+  const r = canvas.getBoundingClientRect();
+  ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ndc, cam);
+  const hit = ray.intersectObjects(itemsGroup.children, true)[0];
+  return hit ? itemRootOf(hit.object) : null;
+}
+canvas.addEventListener('pointermove', e => {
+  if (!signedIn || addOpen) return;
+  const o = pick(e);
+  if (o !== hovered) {
+    if (hovered && hovered !== selected) setGlow(hovered, 0);
+    hovered = o;
+    if (o && o !== selected) setGlow(o, .14);
+  }
+  document.body.classList.toggle('hovering', !!o);
+  const tip = $('#tip');
+  if (o && o !== selected) { const its = stackItems(o.userData.cat); tip.textContent = its.length ? its[0].name + (its.length > 1 ? ` +${its.length - 1} more` : '') : ''; tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; tip.classList.add('on'); }
+  else tip.classList.remove('on');
+});
+canvas.addEventListener('pointerleave', () => $('#tip').classList.remove('on'));
+canvas.addEventListener('click', e => {
+  if (!signedIn || addOpen) return;
+  const o = pick(e);
+  if (o) openPop(o.userData.cat); else closePop();
+});
+addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePop(); if (addOpen) closeAdd(); }
+  if (selCat && popPage === 1 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) flip(e.key === 'ArrowRight' ? 1 : -1);
+});
+
+let golden = false;
+function setGolden(on) {
+  if (on === golden) return;
+  golden = on; lights.setMood(on ? 'golden' : 'day', 1200, renderer); document.body.classList.toggle('golden', on);
+}
+function openPop(cat, idx = 0) {
+  const st = stacks.get(cat); if (!st) return;
+  if (selected && selected !== st.obj) { const prev = selected, b = prev.userData.baseY ?? 0; setGlow(prev, 0); tween(250, k => prev.position.y = b + lerp(.12, 0, k)); }
+  if (selected !== st.obj) { const sel = st.obj, b = sel.userData.baseY ?? 0; tween(300, k => sel.position.y = b + lerp(0, sel.userData.flat ? .03 : .12, k), Ease.outBack); }
+  selected = st.obj; selCat = cat; setGlow(selected, .2);
+  $('#tip').classList.remove('on');
+  popIdx = Math.min(idx, st.ids.length - 1);
+  paintItem(0);
+  $('#pop').classList.add('open'); fitPop();
+}
+function flip(d) {
+  const n = stackItems(selCat).length; if (n < 2) return;
+  popIdx = (popIdx + d + n) % n; paintItem(d);
+}
+function paintItem(dir) {
+  const items = stackItems(selCat), item = items[popIdx]; if (!item) return closePop();
+  keeper = null; popPage = 1; setGolden(false);
+  const sug = suggestedValue(item); value = sug.value;
+  $('#popCard').classList.remove('p2');
+  const n = items.length;
+  $('#pg1').innerHTML = `<div class="pg1in ${dir > 0 ? 'from-r' : dir < 0 ? 'from-l' : ''}">
+    ${n > 1 ? `<div class="pager"><span>${catLong(item.category)} · ${popIdx + 1} of ${n}</span><span class="nav"><span class="dots">${items.map((_, i) => `<i class="${i === popIdx ? 'on' : ''}"></i>`).join('')}</span><button data-act="prev" aria-label="Previous ${esc(catLong(item.category))}">‹</button><button data-act="next" aria-label="Next ${esc(catLong(item.category))}">›</button></span></div>` : ''}
+    <div class="pop-top"><img src="${item.photo}" alt=""><div style="min-width:0"><span class="rr-pill">${icon(item.category, 12)}${catLong(item.category)}</span><h4>${esc(item.name)}</h4><p>${money2(item.price)} · bought ${fmtDate(item.date)}</p></div><button class="x" data-act="close" aria-label="Close">${icon('close', 13)}</button></div>
+    <div class="owners">${Object.entries(item.splits).map(([rid, v]) => `<div class="owner">${av(rid, 24)}<span>${nameOf(rid)} paid</span><span>${money2(v)}</span><span class="bar"><i style="width:${v / item.price * 100}%;background:${RM[rid].color}"></i></span></div>`).join('')}</div>
+    <div class="acts"><button class="rr-btn ghost" data-act="chad">Ask Chad</button><button class="rr-btn dark" data-act="mo">${icon('box', 16)}Move out</button></div></div>`;
+  $('#pg2').innerHTML = `
+    <button class="backlink" data-act="back">← ${esc(item.name)}</button>
+    <h4>Who's keeping it?</h4>
+    <div class="keepers">${ROOMMATES.map(r => `<button class="keeper" data-k="${r.id}">${av(r.id, 34)}${r.name}<small>${item.splits[r.id] ? 'paid ' + money(item.splits[r.id]) : "didn't chip in"}</small></button>`).join('')}</div>
+    <div class="value"><div class="row"><span class="rr-muted rr-small" style="font-weight:750;text-transform:uppercase;letter-spacing:.07em">Value now</span><span class="amt" id="valAmt"></span></div>
+      <input type="range" id="valRange" min="0" max="${Math.ceil(item.price)}" step="1" value="${value}" aria-label="Value at move-out">
+      <div class="presets"><button class="rr-btn soft on" data-v="${sug.value}">Suggested ${money(sug.value)}</button><button class="rr-btn ghost" data-v="${item.price}">Paid ${money(item.price)}</button><button class="rr-btn ghost" data-v="${Math.round(item.price / 2)}">Half</button></div>
+      <span class="note">Suggested: about 20% a year of wear (min. 3 months)</span></div>
+    <div class="xfers" id="xfers"><div class="note">Pick who's keeping it to see who owes whom.</div></div>
+    <button class="rr-btn block" data-act="confirm" disabled>Confirm move-out</button>`;
+  const pop = $('#pop');
+  const paintX = () => {
+    $('#valAmt').textContent = money(value);
+    pop.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('on', +b.dataset.v === value));
+    if (!keeper) return;
+    const t = buyout(item, keeper, value);
+    $('#xfers').innerHTML = t.length ? t.map(x => `<div class="rr-xfer">${av(x.to, 24)}<span class="who">${nameOf(x.from)} pays ${nameOf(x.to) === 'You' ? 'you' : nameOf(x.to)}</span><span class="amt">${money2(x.amount)}</span></div>`).join('') : `<div class="note">${nameOf(keeper)} paid for all of it, so nobody owes anything.</div>`;
+    fitPop();
+  };
+  pop.onclick = e => {
+    const a = e.target.closest('[data-act]')?.dataset.act, k = e.target.closest('[data-k]')?.dataset.k, v = e.target.closest('[data-v]')?.dataset.v;
+    if (a === 'close') closePop();
+    if (a === 'prev') flip(-1);
+    if (a === 'next') flip(1);
+    if (a === 'chad') { setDrawer('L', true); chat.ask(`Tell me about the ${item.name}`); }
+    if (a === 'mo') { popPage = 2; $('#popCard').classList.add('p2'); setGolden(true); paintX(); fitPop(); }
+    if (a === 'back') { popPage = 1; $('#popCard').classList.remove('p2'); setGolden(false); fitPop(); }
+    if (v) { value = +v; $('#valRange').value = value; paintX(); }
+    if (k) {
+      keeper = k;
+      pop.querySelectorAll('.keeper').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+      pop.querySelector('[data-act="confirm"]').disabled = false;
+      paintX();
+    }
+    if (a === 'confirm' && keeper) doMoveOut(item, keeper, value);
+  };
+  $('#valRange').oninput = e => { value = +e.target.value; paintX(); };
+  fitPop();
+}
+function fitPop() { $('#popCard').style.height = $(popPage === 1 ? '#pg1' : '#pg2').offsetHeight + 'px'; }
+function closePop() {
+  $('#pop').classList.remove('open'); setGolden(false);
+  if (selected) { const s = selected, b = s.userData.baseY ?? 0, y0 = s.position.y; setGlow(s, 0); tween(250, k => s.position.y = lerp(y0, b, k)); selected = null; }
+  selCat = null;
+}
+function placePop() {
+  if (!selected) return;
+  const p = selected.position.clone(); p.y += (selected.userData.size?.h || 1) + .15;
+  room.group.localToWorld(p);
+  const rect = canvas.getBoundingClientRect(), s = projectToScreen(p, cam, rect);
+  const pop = $('#pop'), hgt = pop.offsetHeight || 300;
+  const below = s.y - hgt - 30 < 70;
+  pop.classList.toggle('below', below);
+  const y = below ? Math.min(innerHeight - hgt - 20, projectToScreen(selected.getWorldPosition(new THREE.Vector3()), cam, rect).y + 10) : s.y;
+  const x = Math.min(innerWidth - 180, Math.max(180, s.x));
+  pop.style.left = x + 'px'; pop.style.top = y + 'px';
+}
+
+async function doMoveOut(item, keeperId, val) {
+  const st = stacks.get(item.category), o = st.obj;
+  const t = confirmMoveOut(item, keeperId, val);
+  movedOutAny = true;
+  st.ids = st.ids.filter(id => id !== item.id);
+  const msg = `${icon('key', 16)} ${RM[keeperId].name} keeps the ${esc(item.name)}${t.length ? ' · ' + t.map(x => `${money2(x.amount)} to ${RM[x.to].name}`).join(', ') : ''}`;
+  if (st.ids.length) {
+    /* others of this type remain: the model stays, the menu moves to the next one */
+    puff(itemsGroup, new THREE.Vector3(o.position.x, 1, o.position.z), 0xffe2c4, 10);
+    toast(msg + ` · ${st.ids.length} ${catLong(item.category).toLowerCase()} left`, 3600);
+    refresh();
+    popIdx = Math.min(popIdx, st.ids.length - 1); paintItem(1); fitPop();
+    return;
+  }
+  $('#pop').classList.remove('open'); selected = null; selCat = null;
+  stacks.delete(item.category); relayout();
+  const y0 = o.position.y, base = o.position.clone();
+  await tween(700, k => { o.position.y = y0 + k * 1.4; o.rotation.y += .02 + k * .08; o.scale.setScalar(Math.max(.001, 1 - Ease.in(k))); }, Ease.inOut);
+  base.y = 1.2; puff(itemsGroup, base, 0xffe2c4, 16);
+  itemsGroup.remove(o); computeNextSlot(); refresh();
+  setGolden(false);
+  toast(msg, 3600);
+  if (!house.items.length) setTimeout(showEnd, 900);
+}
+
+function showEnd() {
+  setDrawer('L', false); setDrawer('R', false);
+  const net = settleUp(netsFrom([], house.buyouts));
+  $('#end').innerHTML = `
+    <div style="font-size:40px">🔑</div><h2>Room's empty. Everyone's square.</h2>
+    <p class="rr-muted">Every shared item went home with someone. Here's the final buyout tally:</p>
+    <div class="kept">${net.length ? net.map(x => `<div>${av(x.from, 26)}${icon('arrow', 14)}${av(x.to, 26)}<span style="flex:1">${RM[x.from].name} pays ${RM[x.to].name}</span><b>${money2(x.amount)}</b></div>`).join('') : '<div>Nobody owes anything for furniture.</div>'}</div>
+    <div class="kept">${Object.entries(house.keptBy).map(([rid, its]) => `<div>${av(rid, 26)}<span style="flex:1">${RM[rid].name} kept ${its.map(i => esc(i.name)).join(', ')}</span></div>`).join('')}</div>
+    <div class="btns"><button class="rr-btn ghost" id="endKeep">Keep using the room</button><button class="rr-btn" onclick="location.reload()">Start a new place</button></div>`;
+  $('#end').classList.add('open');
+  $('#endKeep').onclick = () => $('#end').classList.remove('open');
+}
+
+/* ---------------- shortcuts, login, loop ---------------- */
+$('#archBtn').onclick = () => openArch({
+  title: "Round 5 · How it's built", sub: 'Round 4 (live Claude Haiku + Sonnet on Bedrock) plus five more living-room categories and one layout that works from one item to a full room.',
+  bullets: ['<b>Ten categories</b>: couch, chair, coffee table, TV, speakers, and new in round 5: area rug, floor lamp, bookshelf, game console, mini fridge. These are the shared purchases college roommates actually split. Haiku is sent the definition of every category the app supports (<code>categories</code> in the request), and its answer is constrained to that enum.',
+    '<b>Layout</b>: fixed zones that each look natural alone and fit together when full. The back wall is seating (mini fridge as an end table, the couch, the floor lamp, the bookshelf in the corner). The centre has the rug under the coffee table. The left wall is media (speaker in the corner, the TV, and the console on the TV stand, or on the floor if there is no TV). The reading chair sits front right, and the front-left floor stays open as a walkway (that is where Add floats). Fill room adds 11 things.',
+    '<b>Local backend</b> (<code>server/index.mjs</code>, 127.0.0.1:8787): the only place AWS credentials exist (profile <code>cic-sandbox</code>, region <code>us-east-1</code>). The browser sends PNGs and chat turns; the server signs Bedrock requests. It only accepts the Lavish board and local pages as origins.',
+    '<b>Classification</b>: <code>POST /api/classify</code> sends the PNG as an image block to <code>us.anthropic.claude-haiku-5-5</code>. The system prompt lists the five categories with definitions ("an armchair is a chair, never a couch"; one seat cushion is a chair). A JSON-schema output pins <code>category</code> to couch | tv | coffee_table | chair | speaker and returns a score per category, a suggested name and a one-line reason.',
+    '<b>Chad</b>: <code>POST /api/chat</code> streams <code>us.anthropic.claude-sonnet-5-5</code> over server-sent events. Each call carries the conversation and a fresh household ledger (items with who paid what, items already moved out, bills, buyouts, who owes whom) inside the system prompt, so answers use real numbers.',
+    '<b>Errors</b>: an expired or unauthorized AWS session comes back as one clear message ("AWS session expired … aws sso login --profile cic-sandbox"), the top-right pill turns red, and both the add card and Chad offer Retry. An explicit "Use a simulated result" or "Answer offline instead" keeps the demo usable.',
+    '<b>Why InvokeModel</b>: this account returned 404 for every model id on the newer bedrock-mantle endpoint, so the backend uses the Bedrock InvokeModel client with the US cross-region inference profiles.']
+});
+$('#fillBtn').onclick = () => {
+  if (!signedIn) return;
+  closeAdd();
+  const fill = SAMPLES3.map(s => ({ name: s.name, price: s.price, date: s.date, category: s.truth, photo: samplePhoto(s.draw), splits: equalSplit(s.price) }));
+  const pair = { lamp: ['alex', 'maya'], game_console: ['alex', 'jordan'] };
+  fill.forEach(f => { if (pair[f.category]) f.splits = equalSplit(f.price, pair[f.category]); });
+  fill.push({ name: 'Folding chair', price: 45, date: '2026-09-14', category: 'chair', photo: samplePhoto('chair'), splits: equalSplit(45, ['alex', 'jordan']) });
+  fill.forEach((d, i) => setTimeout(() => addItem(d, true), i * 240));
+};
+$('#resetBtn').onclick = () => location.reload();
+$('#loginForm').onsubmit = e => {
+  e.preventDefault();
+  $('#login').classList.add('gone');
+  signedIn = true; document.body.classList.add('in'); view.ty = 0; refresh();
+};
+window.__rr = { addItem, SAMPLES3, samplePhoto, house, stacks, openPop, flip, doMoveOut, openAdd, setDrawer, chat, sniffFormat };
+
+resize(); refresh();
+const anchor = new THREE.Vector3(), tmp = new THREE.Vector3();
+let last = performance.now();
+renderer.setAnimationLoop(now => {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  tickTweens(now);
+  const k = 1 - Math.exp(-dt * 5.5);
+  view.dx += (view.tdx - view.dx) * k; view.zoom += (view.tzoom - view.zoom) * k; view.y += (view.ty - view.y) * (1 - Math.exp(-dt * 3.2));
+  room.group.position.y = view.y;
+  const w = innerWidth, hgt = innerHeight, a = w / hgt, vh = Math.max(9.8, 11.8 / a);
+  Object.assign(cam, { left: -vh * a / 2, right: vh * a / 2, top: vh / 2, bottom: -vh / 2, zoom: view.zoom });
+  cam.setViewOffset(w, hgt, -view.dx, 0, w, hgt);
+  const rect = canvas.getBoundingClientRect();
+  const mk = projectToScreen(anchor.set(nextSlot.x, view.y + .05, nextSlot.z), cam, rect);
+  Object.assign($('#marker').style, { left: mk.x + 'px', top: mk.y + 'px' });
+  if (addOpen) {
+    const ac = $('#acard'), cw = ac.offsetWidth, ch = ac.offsetHeight;
+    const flipSide = mk.x + 34 + cw > innerWidth - 12 - (drawers.R ? $('#drawerR').offsetWidth + 16 : 0);
+    ac.classList.toggle('flip', flipSide);
+    const left = flipSide ? mk.x - 34 - cw : mk.x + 34;
+    const top = Math.min(innerHeight - ch - 16, Math.max(82, mk.y - 6 - ch / 2));
+    Object.assign(ac.style, { left: Math.max(12, left) + 'px', top: top + 'px' });
+    ac.style.setProperty('--ty', Math.min(ch - 24, Math.max(24, mk.y - 6 - top)) + 'px');
+  }
+  document.querySelectorAll('[data-chip]').forEach(c => {
+    const st = stacks.get(c.dataset.chip); if (!st) return;
+    tmp.copy(st.obj.position); tmp.y += (st.obj.userData.size?.h || 1) + .25; room.group.localToWorld(tmp);
+    const p = projectToScreen(tmp, cam, rect);
+    c.style.left = p.x + 'px'; c.style.top = p.y + 'px'; c.style.opacity = st.obj === selected ? 0 : 1;
+  });
+  $('#marker').classList.toggle('away', !!selected);
+  placePop();
+  renderer.render(scene, cam);
+});
+</script>
+</body>
+</html>
