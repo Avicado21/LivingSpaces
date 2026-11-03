@@ -2,7 +2,7 @@
 
    npm start            serve dist/ and the API on http://127.0.0.1:8787
    Env: PORT, HOST, LIVINGSPACES_DB (default data/livingspaces.db),
-        AWS_REGION (us-east-1), LIVINGSPACES_AWS_PROFILE (cic-sandbox),
+        AWS_REGION (us-east-1), LIVINGSPACES_AWS_PROFILE (falls back to AWS_PROFILE / default),
         HAIKU_MODEL, SONNET_MODEL */
 import http from 'node:http';
 import { existsSync } from 'node:fs';

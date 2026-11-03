@@ -8,7 +8,6 @@ import { CAT } from '../shared/categories.js';
 
 export const DEFAULTS = {
   region: 'us-east-1',
-  profile: 'cic-sandbox',
   haikuModel: 'us.anthropic.claude-haiku-5-5',
   sonnetModel: 'us.anthropic.claude-sonnet-5-5',
 };
@@ -62,11 +61,14 @@ export function normaliseScores(categories, raw) {
 
 export function createBedrockAI(opts = {}) {
   const cfg = { ...DEFAULTS, ...Object.fromEntries(Object.entries(opts).filter(([, v]) => v)) };
-  const credentials = () => fromNodeProviderChain({ profile: cfg.profile });
+  /* No built-in profile: an explicit one wins, otherwise the standard AWS
+     chain (AWS_PROFILE, env keys, the "default" profile, SSO, ...). */
+  const credentials = () => fromNodeProviderChain(cfg.profile ? { profile: cfg.profile } : {});
+  const profileLabel = cfg.profile || process.env.AWS_PROFILE || 'default';
   const client = new AnthropicBedrock({ awsRegion: cfg.region, providerChainResolver: async () => credentials() });
 
   return {
-    info: { region: cfg.region, profile: cfg.profile, models: { classify: cfg.haikuModel, chat: cfg.sonnetModel } },
+    info: { region: cfg.region, profile: profileLabel, models: { classify: cfg.haikuModel, chat: cfg.sonnetModel } },
 
     async checkCredentials() {
       const c = await credentials()();
@@ -107,7 +109,7 @@ export function createBedrockAI(opts = {}) {
 
 /* One clear message per failure, for the UI. An expired or missing AWS session
    is the common case and says exactly how to fix it. */
-export function explainError(err, profile = DEFAULTS.profile) {
+export function explainError(err, profile = process.env.AWS_PROFILE || 'default') {
   if (err?.http && err.code) return { status: err.http, code: err.code, message: err.message };
   if (err?.http) return { status: err.http, code: 'bad_request', message: err.message };
   const credsProblem = ['CredentialsProviderError', 'ExpiredTokenException', 'TokenProviderError', 'ExpiredToken'].includes(err?.name);

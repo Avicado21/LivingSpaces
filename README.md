@@ -11,13 +11,13 @@ The ten categories are couch, chair (an armchair is a chair), coffee table, TV, 
 ## Requirements
 
 - Node.js 22.13 or newer (uses the built-in `node:sqlite`)
-- The AWS CLI with SSO access to the **`cic-sandbox`** profile, which has Bedrock access in **us-east-1** to `us.anthropic.claude-haiku-5-5` and `us.anthropic.claude-sonnet-5-5`
+- The AWS CLI with an AWS profile (SSO or keys) that has Bedrock access in **us-east-1** to `us.anthropic.claude-haiku-5-5` and `us.anthropic.claude-sonnet-5-5`
 
 ## Run it
 
 ```sh
 npm install
-aws sso login --profile cic-sandbox   # refresh the AWS session (repeat when it expires)
+aws sso login --profile <your-profile>  # refresh the AWS session (repeat when it expires)
 npm run build                          # build the front end into dist/
 npm start                              # http://127.0.0.1:8787
 ```
@@ -33,10 +33,10 @@ Data lives in `data/livingspaces.db` (SQLite: household, roommates, items with t
 | `PORT`, `HOST` | `8787`, `127.0.0.1` |
 | `LIVINGSPACES_DB` | `data/livingspaces.db` |
 | `AWS_REGION` | `us-east-1` |
-| `LIVINGSPACES_AWS_PROFILE` | `cic-sandbox` |
+| `LIVINGSPACES_AWS_PROFILE` | none: uses `AWS_PROFILE`, then `default` |
 | `HAIKU_MODEL`, `SONNET_MODEL` | `us.anthropic.claude-haiku-5-5`, `us.anthropic.claude-sonnet-5-5` |
 
-If the AWS session has expired, the top-right pill turns red, and the app says "The AWS session for profile "cic-sandbox" is expired or not authorized. Refresh it with: aws sso login --profile cic-sandbox". Run that, then press Retry.
+If the AWS session has expired, the top-right pill turns red, and the app says "The AWS session for profile "<your-profile>" is expired or not authorized. Refresh it with: aws sso login --profile <your-profile>". Run that, then press Retry.
 
 ## Tests
 
